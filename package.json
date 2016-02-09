@@ -1,0 +1,16 @@
+{
+  "name": "acro",
+  "version": "0.0.1",
+  "description": "Acrophobia clone",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Nichols",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^4.4.4",
+    "q": "^1.4.1",
+    "sequelize": "^3.19.2"
+  }
+}
