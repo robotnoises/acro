@@ -9,6 +9,7 @@
   "author": "David Nichols",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.14.2",
     "express": "^4.13.4",
     "pg": "^4.4.4",
     "q": "^1.4.1",
