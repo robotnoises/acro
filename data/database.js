@@ -1,12 +1,11 @@
 var Sequelize = require('sequelize');
+var config = require('./../config/config');
 var models = require('./models');
 
-var url = 'postgres://xytqofnhurvldz:l1ExkEuRBmR52hSsyq0Wn6ZHFS@ec2-54-83-17-9.compute-1.amazonaws.com:5432/dctdct2vhr91u1';
-var username = 'xytqofnhurvldz';
-var password = 'l1ExkEuRBmR52hSsyq0Wn6ZHFS';
+var url = config.DATABASE_URL;
 
 var options = {
-  schema: 'db_acro',
+  schema: config.DATABASE_SCHEMA,
   dialect: 'postgres',
   dialectOptions: {
     ssl: true
