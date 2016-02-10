@@ -1,2 +1,8 @@
+# Libs
+
 node_modules/
+
+# IDE
+
+.vscode/
 typings/
