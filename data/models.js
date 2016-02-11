@@ -41,7 +41,7 @@ var Game = {
 
 var Round = {
   stage: Sequelize.ENUM(ROUND_STAGES),
-  acronym: Sequelize.ARRAY,
+  acronym: Sequelize.ARRAY(Sequelize.STRING),
   validator: Sequelize.STRING
 };
 
@@ -72,16 +72,16 @@ function _defineAll(connection) {
     
     // Define each Model
     
-    var user = _define(connection, 'user', User);
-    var game = _define(connection, 'game', Game);
-    var round = _define(connection, 'round', Round);
-    var score = _define(connection, 'score', Score);
+    var users = _define(connection, 'user', User);
+    var games = _define(connection, 'game', Game);
+    var rounds = _define(connection, 'round', Round);
+    var scores = _define(connection, 'score', Score);
     
     // Define Model Associations
     
-    // user.belongsTo(game);
-    // round.belongsTo(game);
-    // score.hasMany(user, round);
+    // users.belongsTo(games);
+    // rounds.belongsTo(games);
+    // scores.hasMany(users, rounds);
   } else {
     console.error('A valid Sequelize connection is required.');
   }
