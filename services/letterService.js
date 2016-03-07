@@ -31,7 +31,7 @@
 // y	1.620%	
 // z	0.034%
 
-// To speed things-up, We're using an object containing each letter * their (rounded) frequency
+// To speed things up, we're using an object containing each letter * their (rounded) frequency
 
 var letters = {
   0: 'T', 1: 'T', 2: 'T', 3: 'T', 4: 'T', 5: 'T', 6: 'T', 7: 'T', 8: 'T', 9: 'T', 10: 'T', 11: 'T', 12: 'T', 13: 'T', 14: 'T', 15: 'T', 16: 'T', 
