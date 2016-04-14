@@ -4,7 +4,7 @@
 // var Dispatcher  = require('./lib/Dispatcher');
 // var Queue       = require('./lib/Queue');
 
-import {Config}                           from './config/Config';
+// import {Config}                           from './config/Config';
 // import {Auth, Dispatcher, Monitor, Queue} from './lib/Libs';
 
 // function _start() {
@@ -27,7 +27,7 @@ export class Queue {
   }
   
   start() {
-    console.log('hey, it started!');
+    console.log('Queue started');
     console.log('URL: ', this.url);
     console.log('Token: ', this.token);
   }

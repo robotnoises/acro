@@ -1,20 +1,20 @@
 "use strict";
-var Config = (function () {
-    function Config() {
+var QueueConfig = (function () {
+    function QueueConfig() {
     }
-    Config.FB_URL = function () {
-        return ''; // (process.env.FB_NAME) ? `https://${process.enc.FB_NAME}.firebaseio.com` : '';
+    QueueConfig.FB_URL = function () {
+        return (process.env.FB_NAME) ? "https://" + process.env.FB_NAME + ".firebaseio.com" : '';
     };
-    Config.FB_TOKEN = function () {
-        return ''; // process.env.FB_TOKEN || '';
+    QueueConfig.FB_TOKEN = function () {
+        return process.env.FB_TOKEN || '';
     };
-    Config.FB_QUEUEPATH = function () {
+    QueueConfig.FB_QUEUEPATH = function () {
         return '/queue';
     };
-    Config.FB_TASKPATH = function () {
+    QueueConfig.FB_TASKPATH = function () {
         return this.FB_QUEUEPATH + "/tasks";
     };
-    return Config;
+    return QueueConfig;
 }());
-exports.Config = Config;
+exports.QueueConfig = QueueConfig;
 //# sourceMappingURL=Config.js.map

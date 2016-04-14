@@ -4,6 +4,7 @@
 // var Dispatcher  = require('./lib/Dispatcher');
 // var Queue       = require('./lib/Queue');
 "use strict";
+// import {Config}                           from './config/Config';
 // import {Auth, Dispatcher, Monitor, Queue} from './lib/Libs';
 // function _start() {
 //   Auth(Config.FB_URL, Config.FB_TOKEN).then(function ($firebaseInstance) {
@@ -19,7 +20,7 @@ var Queue = (function () {
         this.token = token;
     }
     Queue.prototype.start = function () {
-        console.log('hey, it started!');
+        console.log('Queue started');
         console.log('URL: ', this.url);
         console.log('Token: ', this.token);
     };

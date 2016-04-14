@@ -19,7 +19,9 @@
     "pg": "^4.4.4",
     "q": "^1.4.1",
     "sequelize": "^3.19.2",
-    "tocktimer": "^1.0.9",
+    "tocktimer": "^1.0.9"
+  },
+  "devDependencies": {
     "typescript": "^1.8.10"
   }
 }
