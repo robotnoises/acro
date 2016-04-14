@@ -2,13 +2,16 @@
   "name": "acro",
   "version": "0.0.1",
   "description": "Acrophobia clone",
-  "main": "app.js",
+  "main": "App.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run tsc && node app",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w"
   },
   "author": "David Nichols",
   "license": "MIT",
   "dependencies": {
+    "babel": "^6.5.2",
     "body-parser": "^1.14.2",
     "express": "^4.13.4",
     "firebase": "^2.4.1",
