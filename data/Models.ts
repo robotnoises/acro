@@ -115,7 +115,9 @@ export class Models {
     if (connection && connection.define) {
 
       // Define each Model
-
+      
+      var definedModels = {};
+      
       models.push(new User('user'));
       models.push(new Game('game'));
       models.push(new Round('round'));
@@ -124,20 +126,16 @@ export class Models {
       models.forEach((m: IModel) => {
         var name = m.modelName;
         delete m.modelName;
-        m.define(connection, name, m);
+        // Define the models in Sequelize
+        definedModels[name] = m.define(connection, name, m);
       });
 
-      // var game = _define(connection, 'game', Game);
-      // var round = _define(connection, 'round', Round);
-      // var score = _define(connection, 'score', Score);
-
       // Define Model Associations
-
-      // round.hasMany(score);
-
-      // users.belongsTo(games);
-      // rounds.belongsTo(games);
-      // scores.hasMany(users, rounds);
+      
+      // A game has many rounds
+      definedModels['game'].hasMany(definedModels['round']);
+      // A round has many scores
+      definedModels['round'].hasMany(definedModels['score']);
     } else {
       console.error('A valid Sequelize connection is required.');
     }
