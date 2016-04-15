@@ -21,7 +21,7 @@ export class Database {
     var connection = new Sequelize(Config.DATABASE_URL(), options);
     var models = new Models();
   
-    models.defineAll(connection);
+    models.defineModels(connection);
   
     return connection.sync();
   }

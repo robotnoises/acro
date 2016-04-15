@@ -105,18 +105,19 @@ export class Models {
   Round = Round;
   Score = Score;
   
+  private definedModels: Object;
+  
   constructor() {
+    this.definedModels = {};
   }
   
-  defineAll(connection: any) {
+  defineModels(connection: any) {
     
     var models = [];
     
     if (connection && connection.define) {
 
       // Define each Model
-      
-      var definedModels = {};
       
       models.push(new User('user'));
       models.push(new Game('game'));
@@ -127,17 +128,28 @@ export class Models {
         var name = m.modelName;
         delete m.modelName;
         // Define the models in Sequelize
-        definedModels[name] = m.define(connection, name, m);
+        this.definedModels[name] = m.define(connection, name, m);
       });
-
-      // Define Model Associations
       
-      // A game has many rounds
-      // definedModels['game'].hasMany(definedModels['round']);
-      // A round has many scores
-      // definedModels['round'].hasMany(definedModels['score']);
+      console.log('Sequelize Models defined.');
     } else {
       console.error('A valid Sequelize connection is required.');
+    }
+  }
+  
+  createAssociations() {
+
+    //Define Model Associations
+    
+    if (Object.keys(this.definedModels).length > 0) {
+      //A game has many rounds
+      this.definedModels['game'].hasMany(this.definedModels['round']);
+      //A round has many scores
+      this.definedModels['round'].hasMany(this.definedModels['score']);
+      
+      console.log('Sequelize Models associations defined.');
+    } else {
+      throw new Error('There are no Sequelize Models defined.');
     }
   }
 }
