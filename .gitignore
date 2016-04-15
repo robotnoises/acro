@@ -12,8 +12,8 @@ npm-debug.log
 # Ignore transpiled typescript files
 App.js
 App.js.map
-# services/*.js
-# services/*.js.map
+services/*.js
+services/*.js.map
 server/*.js
 server/*.js.map
 queue/*.js
