@@ -13,7 +13,7 @@ export class Database {
       schema: Config.DATABASE_SCHEMA(),
       dialect: 'postgres',
       dialectOptions: {
-        ssl: true
+        ssl: Config.SSL()
       },
       logging: console.log
     };

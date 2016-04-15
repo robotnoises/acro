@@ -34,6 +34,9 @@
     },
     "body-parser/body-parser.d.ts": {
       "commit": "94d8775a947f626269b06ccadd6f5e61839389d0"
+    },
+    "q/Q.d.ts": {
+      "commit": "94d8775a947f626269b06ccadd6f5e61839389d0"
     }
   }
 }

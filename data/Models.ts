@@ -133,9 +133,9 @@ export class Models {
       // Define Model Associations
       
       // A game has many rounds
-      definedModels['game'].hasMany(definedModels['round']);
+      // definedModels['game'].hasMany(definedModels['round']);
       // A round has many scores
-      definedModels['round'].hasMany(definedModels['score']);
+      // definedModels['round'].hasMany(definedModels['score']);
     } else {
       console.error('A valid Sequelize connection is required.');
     }
