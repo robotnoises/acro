@@ -33,7 +33,7 @@
 
 // To speed things up, we're using an object containing each letter * their (rounded) frequency
 
-var letters = {
+var _letters = {
   0: 'T', 1: 'T', 2: 'T', 3: 'T', 4: 'T', 5: 'T', 6: 'T', 7: 'T', 8: 'T', 9: 'T', 10: 'T', 11: 'T', 12: 'T', 13: 'T', 14: 'T', 15: 'T', 16: 'T', 
   17: 'A', 18: 'A', 19: 'A', 20: 'A', 21: 'A', 22: 'A', 23: 'A', 24: 'A', 25: 'A', 26: 'A', 27: 'A', 28: 'A',
   29: 'S', 30: 'S', 31: 'S', 32: 'S', 33: 'S', 34: 'S', 35: 'S', 36: 'S',
@@ -62,19 +62,19 @@ var letters = {
   105: 'X',
 };
 
-function getRandom() {
-  // Between 0 && 105, inclusive
-  return Math.floor(Math.random() * 106);
-}
-
-/*
- * Public methods
-*/
-
-function _choose() {
-  return letters[getRandom()];
-}
-
-module.exports = {
-  choose: _choose
+export class LetterService {
+  
+  letters: Object;
+  
+  constructor() {
+    this.letters = _letters;
+  }
+  
+  private getRandom() {
+    return Math.floor(Math.random() * 106);
+  }
+  
+  choose() {
+    return this.letters[this.getRandom()];
+  }
 }
