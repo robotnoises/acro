@@ -1,17 +1,24 @@
 var Timer = require('tocktimer');
 
-// var timer = new Tock({
-//   countdown: true,
-//   interval: 10,
-//   callback: someCallbackFunction,
-//   complete: someCompleteFunction
-// });
+interface IOptions {
+  countdown: boolean;
+  interval: number;
+}
 
 export class TimerService {
   
   private timer: any;
+  private options: Object;
   
-  constructor(optionOverrides?: any) {
+  constructor(optionOverrides?: IOptions) {
+    this.setOptions(optionOverrides, function (options) {
+      this.timer = new Timer(options);
+      this.timer.complete = this.onTimerComplete;
+      this.timer.callback = this.onTimerTick;
+    }.bind(this));
+  }
+  
+  private setOptions(optionOverrides?: IOptions, callback?: Function) {
     
     var options = {
       countdown: true,
@@ -22,10 +29,10 @@ export class TimerService {
       options.countdown = optionOverrides.countdown || options.countdown;
       options.interval = optionOverrides.interval || options.interval;
     }
-  
-    this.timer = new Timer(options);
-    this.timer.complete = this.onTimerComplete;
-    this.timer.callback = this.onTimerTick;
+    
+    if (callback) {
+      callback(options);
+    }
   }
   
   start(startTime?: number) {
@@ -44,6 +51,23 @@ export class TimerService {
       return this.timer.pause_time;
     } else {
       throw new Error('Timer is undefined.');
+    }
+  }
+  
+  getElapsed() {
+    return this.timer.time;
+  }
+  
+  reset(newOptions?: IOptions) {
+    
+    this.timer = null;
+    
+    if (newOptions) {
+      this.setOptions(newOptions, function (options) {
+        this.timer = new Timer(options);  
+      }.bind(this));  
+    } else {
+      this.timer = new Timer(this.options);
     }
   }
   

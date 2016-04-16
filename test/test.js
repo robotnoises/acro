@@ -62,5 +62,23 @@ describe('TimerService', function() {
       });
     });
     
+    it('should reset', function (done) {
+      
+      var Service = new TimerService.TimerService({interval: 10});
+      var startAt = 100;
+      
+      // Count down starting @ 100ms
+      Service.start(startAt);
+      
+      setTimeout(function () {
+        var stoppedAt = Service.pause();
+        Service.reset();
+        assert.isAbove(stoppedAt, 0);           // The Original Timer started
+        assert.isBelow(stoppedAt, startAt); // It counted down
+        assert.equal(Service.getElapsed(), 0);  // It was reset
+        done();
+      }, 10);
+    });
+    
   });
 });
