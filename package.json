@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npm run tsc && node app",
     "tsc": "tsc",
-    "tsc:w": "tsc -w"
+    "tsc:w": "tsc -w",
+    "test": "tsc && mocha \"test/*.js\""
   },
   "author": "David Nichols",
   "license": "MIT",
@@ -19,9 +20,11 @@
     "pg": "^4.4.4",
     "q": "^1.4.1",
     "sequelize": "^3.19.2",
-    "tocktimer": "^1.0.9"
+    "tocktimer": "^1.0.10"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
     "typescript": "^1.8.10"
   }
 }

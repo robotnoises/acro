@@ -9,28 +9,53 @@ var Timer = require('tocktimer');
 
 export class TimerService {
   
-  timer: any;
+  private timer: any;
   
-  constructor(options) {
+  constructor(optionOverrides?: any) {
     
-    var defaultOptions = {
+    var options = {
       countdown: true,
       interval: 1000
     };
     
-    if (typeof options === 'object') {
-      options.countdown = options.countdown || defaultOptions.countdown;
-      options.interval = options.interval || defaultOptions.interval;
+    if (typeof optionOverrides === 'object') {
+      options.countdown = optionOverrides.countdown || options.countdown;
+      options.interval = optionOverrides.interval || options.interval;
     }
   
     this.timer = new Timer(options);
+    this.timer.complete = this.onTimerComplete;
+    this.timer.callback = this.onTimerTick;
   }
   
-  start() {
+  start(startTime?: number) {
+
     if (this.timer) {
-      this.timer.start();
+      var startAt = startTime || 0;
+      this.timer.start(startAt);
     } else {
       throw new Error('Timer is undefined.');
+    }
+  }
+  
+  pause():number {
+    if (this.timer) {
+      this.timer.pause();
+      return this.timer.pause_time;
+    } else {
+      throw new Error('Timer is undefined.');
+    }
+  }
+  
+  onTimerComplete(cb?: Function) {
+    if (this.timer && cb) {
+      cb(this.timer);
+    }
+  }
+  
+  onTimerTick(cb?: Function) {
+    if (this.timer && cb) {
+      cb(this.timer);  
     }
   }
 }
