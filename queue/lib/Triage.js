@@ -1,33 +1,28 @@
 // Triage.js
 // A Worker factory
-
-var Task = require ('./../utilities/Task');
-var Worker = require('./Worker');
-
-// Private
-
-function getWorker(taskType) {
-  if (taskType === Task.TYPE.ORPHANED_NODE) {
-    return Worker.createNode;
-  } else if (taskType === Task.TYPE.CALC_ROOM_SCORES) {
-    return Worker.calcRoomScores;
-  } else if(taskType === Task.TYPE.PRUNE_DEAD_ROOMS) {
-    return Worker.pruneDeadRooms;
-  }
-}
-
-// Public
-
-function _triage(data, progress, resolve, reject) {
-
-  var fn = getWorker(data.type);
-  
-  fn(data).then(function () {
-    resolve();  
-  }).fail(function (error) {
-    console.error(error);
-    reject();  
-  });
-}
-
-module.exports = _triage;
+"use strict";
+var Task_1 = require('./Task');
+var Worker_1 = require('./Worker');
+var Triage = (function () {
+    function Triage() {
+    }
+    Triage.getWorker = function (taskType) {
+        if (taskType === Task_1.TASK_TYPE.GAMEBOT) {
+            return Worker_1.Worker.gameBot;
+        }
+        else {
+            console.error();
+            throw new Error("Task " + taskType + " does not exist.");
+        }
+    };
+    Triage.task = function (data, progress, resolve, reject) {
+        var fn = this.getWorker(data.type);
+        fn(data).then(function () { return resolve; }).catch(function (error) {
+            console.error(error);
+            reject(error);
+        });
+    };
+    return Triage;
+}());
+exports.Triage = Triage;
+//# sourceMappingURL=Triage.js.map

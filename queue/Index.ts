@@ -1,20 +1,5 @@
-// var Config      = require('./config/Config');
-// var Auth        = require('./lib/Auth');
-// var Monitor     = require('./lib/Monitor');
-// var Dispatcher  = require('./lib/Dispatcher');
-// var Queue       = require('./lib/Queue');
-
-// import {Config}                           from './config/Config';
-// import {Auth, Dispatcher, Monitor, Queue} from './lib/Libs';
-
-// function _start() {
-//   Auth(Config.FB_URL, Config.FB_TOKEN).then(function ($firebaseInstance) {
-//     Dispatcher.start($firebaseInstance, Monitor.paths);
-//     Queue.start($firebaseInstance);
-//   }).fail(function (error) {
-//     console.error(error);
-//   });
-// }
+import {Auth}   from './lib/Auth';
+import {FQueue} from './lib/Queue';
 
 export class Queue {
   
@@ -27,8 +12,12 @@ export class Queue {
   }
   
   start() {
-    console.log('Queue started');
-    console.log('URL: ', this.url);
-    console.log('Token: ', this.token);
+    console.log('Starting Queue... ');
+    Auth.firebase(this.url, this.token).then(($firebaseInstance: any) => {
+      var queue = new FQueue($firebaseInstance);
+      queue.start();
+    }).catch((error: any) => {
+      console.error(error);
+    });
   }
 }
