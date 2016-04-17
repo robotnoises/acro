@@ -22,6 +22,8 @@ queue/**/*.js
 queue/**/*.js.map
 data/*.js
 data/*.js.map
+models/*.js
+models/*.js.map
 config/*.js
 config/*.js.map
 api/*.js
