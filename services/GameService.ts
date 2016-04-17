@@ -1,9 +1,11 @@
 import {LetterService} from './LetterService';
+import {Round} from './../models/Round';
 
 // Game BL goes here
 
 export class Game {
   
+  currentRound: Object;
   rounds: Object;
   state: any;
   
