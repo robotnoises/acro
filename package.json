@@ -7,7 +7,7 @@
     "start": "npm run tsc && node app",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
-    "test": "tsc && mocha \"test/*.js\""
+    "test": "tsc && mocha \"test/unit/*.js\""
   },
   "author": "David Nichols",
   "license": "MIT",

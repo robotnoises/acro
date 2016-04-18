@@ -7,9 +7,7 @@ import {Worker} from './Worker';
 export class Triage {
   
   constructor() {}
-  
-  
-  
+
   static task(data: ITask, progress: any, resolve: Function, reject: Function) {
 
     function getWorker(taskType: TASK_TYPE) {
