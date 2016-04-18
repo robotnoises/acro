@@ -5,7 +5,7 @@ import Firebase = require('firebase');
 import {QueueConfig}  from './../config/Config';
 
 export enum TASK_TYPE {
-  GAMEBOT
+  GAME
 }
 
 export interface ITask {

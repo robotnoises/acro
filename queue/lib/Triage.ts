@@ -11,8 +11,8 @@ export class Triage {
   static task(data: ITask, progress: any, resolve: Function, reject: Function) {
 
     function getWorker(taskType: TASK_TYPE) {
-      if (taskType === TASK_TYPE.GAMEBOT) {
-        return Worker.gameBot;
+      if (taskType === TASK_TYPE.GAME) {
+        return Worker.gameWorker;
       } else {
         console.error();
         throw new Error(`Task ${taskType} does not exist.`)

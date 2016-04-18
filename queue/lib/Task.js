@@ -3,7 +3,7 @@
 "use strict";
 var Firebase = require('firebase');
 (function (TASK_TYPE) {
-    TASK_TYPE[TASK_TYPE["GAMEBOT"] = 0] = "GAMEBOT";
+    TASK_TYPE[TASK_TYPE["GAME"] = 0] = "GAME";
 })(exports.TASK_TYPE || (exports.TASK_TYPE = {}));
 var TASK_TYPE = exports.TASK_TYPE;
 var Task = (function () {

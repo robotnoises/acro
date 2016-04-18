@@ -89,7 +89,7 @@ describe('TimerService', function() {
 // // Queue tests
 // describe('Queue', function () {
 //   describe('new Triage()', function (done) {
-//     it('should get a gamebot Worker', function () {
+//     it('should get a GameWorker', function () {
       
 //       var triage = Triage.Triage;
       

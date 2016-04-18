@@ -7,10 +7,10 @@ export class Worker {
   
   constructor() {}
   
-  static gameBot(data: ITask):Promise<any> {
+  static gameWorker(data: ITask):Promise<any> {
     return new Promise(function (resolve, reject) {
       // TODO: DO SOMETHIN'
-      console.log('Getting a gameBot...');
+      console.log('Getting a gameWorker...');
       resolve();
     });
   }

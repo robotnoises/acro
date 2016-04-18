@@ -8,8 +8,8 @@ var Triage = (function () {
     }
     Triage.task = function (data, progress, resolve, reject) {
         function getWorker(taskType) {
-            if (taskType === Task_1.TASK_TYPE.GAMEBOT) {
-                return Worker_1.Worker.gameBot;
+            if (taskType === Task_1.TASK_TYPE.GAME) {
+                return Worker_1.Worker.gameWorker;
             }
             else {
                 console.error();
