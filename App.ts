@@ -29,5 +29,6 @@ db.sync().then(function () {
 
 // Start the Queue
 
-// var queue = new Queue(QueueConfig.FB_QUEUEPATH(), QueueConfig.FB_TOKEN());
-// queue.start();
+var queue = new Queue(QueueConfig.FB_URL(), QueueConfig.FB_TOKEN());
+
+queue.start();

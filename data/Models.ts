@@ -1,6 +1,6 @@
 import Sequelize = require('sequelize');
 
-// Todo: this are Arrays because That's what sequelize is expecting...
+// Todo: these are Arrays because that's what sequelize is expecting...
 
 var GAME_STATES = [
   'INPROG',

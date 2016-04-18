@@ -1,17 +1,16 @@
 "use strict";
 var Auth_1 = require('./lib/Auth');
-var Queue_1 = require('./lib/Queue');
+var StartQueue_1 = require('./lib/StartQueue');
 var Queue = (function () {
     function Queue(url, token) {
         this.url = url;
         this.token = token;
+        console.log('url:', this.url, 'token', this.token);
     }
     Queue.prototype.start = function () {
         console.log('Starting Queue... ');
-        Auth_1.Auth.firebase(this.url, this.token).then(function ($firebaseInstance) {
-            var queue = new Queue_1.FQueue($firebaseInstance);
-            queue.start();
-        }).catch(function (error) {
+        Auth_1.Auth.firebase(this.url, this.token).then(function ($firebaseInstance) { return StartQueue_1.StartQueue($firebaseInstance); })
+            .catch(function (error) {
             console.error(error);
         });
     };

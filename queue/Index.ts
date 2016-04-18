@@ -1,5 +1,5 @@
 import {Auth}   from './lib/Auth';
-import {FQueue} from './lib/Queue';
+import {StartQueue} from './lib/StartQueue';
 
 export class Queue {
   
@@ -13,10 +13,8 @@ export class Queue {
   
   start() {
     console.log('Starting Queue... ');
-    Auth.firebase(this.url, this.token).then(($firebaseInstance: any) => {
-      var queue = new FQueue($firebaseInstance);
-      queue.start();
-    }).catch((error: any) => {
+    Auth.firebase(this.url, this.token).then(($firebaseInstance: any) => StartQueue($firebaseInstance))
+    .catch((error: any) => {
       console.error(error);
     });
   }
