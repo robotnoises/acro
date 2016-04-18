@@ -11,6 +11,13 @@ export interface IGame {
   nextRound(updateCallback: Function);
 }
 
+export interface IGameData {
+  roomId: string;
+  rounds: IRound[];
+  currentRound: IRound;
+  players: any[];
+}
+
 export class Game implements IGame {
   
   roomId: string;
@@ -21,15 +28,20 @@ export class Game implements IGame {
   
   constructor(roomId: string, updateCallback: Function) {
     this.roomId = roomId;
+    this.rounds = null;
+    this.currentRound = null;
+    this.players = null;
     this.updateCallback = updateCallback;
   }
   
-  private getData(): Object {
-    return {
+  getData(): IGameData {
+    var data = {
+      roomId: this.roomId,
       rounds: this.rounds,
       currentRound: this.currentRound,
       players: this.players
     };
+    return data;
   }
   
   addPlayer(player: Object):void {

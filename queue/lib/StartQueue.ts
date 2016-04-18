@@ -11,9 +11,11 @@ export function StartQueue(firebase: any) {
   var queue = new Queue($ref, Triage.task);
 
   // Graceful shutdown
-  process.on('SIGINT', () => {
+  process.on('SIGINT', function () {
+    
     console.log('Starting queue shutdown');
-    queue.shutdown().then(() => {
+    
+    queue.shutdown().then(function () {
       console.log('Finished queue shutdown');
       process.exit(0);
     });

@@ -9,6 +9,7 @@ import {QueueConfig} from './../config/Config'
 
 export interface IFirebaseService {
   create(path: string, data: Object): Promise<Object>;
+  createAt(path: string, data: Object): Promise<Object>;
   read(path: string): Promise<Object>;
   update(path: string, data: Object): Promise<Object>;
   delete(path: string, data: Object): void;
@@ -34,6 +35,10 @@ export class FirebaseService implements IFirebaseService {
   
   create(path: string, data: Object): Promise<Object> {
     return this.waitForResponse(this.firebase.child(path).push(data));
+  }
+  
+  createAt(path: string, data: Object): Promise<Object> {
+    return this.waitForResponse(this.firebase.child(path).set(data));
   }
   
   read(path: string):Promise<Object> {

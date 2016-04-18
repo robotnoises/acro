@@ -6,22 +6,22 @@ var Worker_1 = require('./Worker');
 var Triage = (function () {
     function Triage() {
     }
-    Triage.task = function (data, progress, resolve, reject) {
+    Triage.task = function (task, progress, resolveTask, rejectTask) {
         function getWorker(taskType) {
             if (taskType === Task_1.TASK_TYPE.GAME) {
                 return Worker_1.Worker.gameWorker;
             }
             else {
-                console.error();
                 throw new Error("Task " + taskType + " does not exist.");
             }
         }
-        var fn = getWorker(data.type);
-        return fn(data).then(function () {
-            resolve();
-        }).catch(function (error) {
-            console.error(error);
-            reject(error);
+        var fn = getWorker(task.type);
+        fn(task)
+            .then(function () {
+            resolveTask();
+        })
+            .catch(function (error) {
+            rejectTask(error);
         });
     };
     return Triage;

@@ -1,27 +1,29 @@
-import {IGame, Game} from './../../models/Game';
+import {IGame, IGameData, Game} from './../../models/Game';
 import {IFirebaseService, FirebaseService} from './../services/FirebaseService';
 import {IWorker} from './IWorker';
 
 export class GameWorker implements IWorker {
   
-  game: IGame;
+  game: IGameData;
   firebase: IFirebaseService;
   
-  constructor(roomId: string) {
+  constructor(data: any) {
     this.firebase = new FirebaseService();
-    this.game = new Game(roomId, this.firebase.update);
+    var newGame = new Game(data.roomId, this.firebase.update);
+    this.game = newGame.getData();
   }
   
   private gameHandler(gameData: Object) {
+    // start a timer, when timer finishes, do something/update
     console.log('Game data!!!!', gameData);
   }
   
-  go(): void {
+  go(): Promise<any> {
     // start the game!
-    this.firebase.create(`/games/${this.game.roomId}`, this.game)
-      .then((gameData) => this.gameHandler)
-      .catch((error) => {
-        console.error(error);
-      });
+    return new Promise((resolve, reject) => {
+      // Todo: hmmmm
+      this.firebase.createAt(`/games/${this.game.roomId}`, this.game);
+      resolve();
+    });
   }
 }
