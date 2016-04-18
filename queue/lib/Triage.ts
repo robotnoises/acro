@@ -8,20 +8,22 @@ export class Triage {
   
   constructor() {}
   
-  private static getWorker(taskType: TASK_TYPE) {
-    if (taskType === TASK_TYPE.GAMEBOT) {
-      return Worker.gameBot;
-    } else {
-      console.error();
-      throw new Error(`Task ${taskType} does not exist.`)
-    }
-  }
+  
   
   static task(data: ITask, progress: any, resolve: Function, reject: Function) {
+
+    function getWorker(taskType: TASK_TYPE) {
+      if (taskType === TASK_TYPE.GAMEBOT) {
+        return Worker.gameBot;
+      } else {
+        console.error();
+        throw new Error(`Task ${taskType} does not exist.`)
+      }
+    }
     
-    var fn = this.getWorker(data.type);
+    var fn = getWorker(data.type);
   
-    fn(data).then(() => resolve).catch((error) => {
+    return fn(data).then(() => resolve).catch((error) => {
       console.error(error);
       reject(error);  
     });

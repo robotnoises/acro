@@ -10,7 +10,8 @@ export class Worker {
   static gameBot(data: ITask):Promise<any> {
     return new Promise(function (resolve, reject) {
       // TODO: DO SOMETHIN'
-      resolve();
+      console.log('Getting a gameBot...');
+      resolve(data);
     });
   }
 }

@@ -79,6 +79,29 @@ describe('TimerService', function() {
         done();
       }, 10);
     });
-    
+  });
+});
+
+var Triage = require('./../queue/lib/Triage');
+
+// Queue tests
+describe('Queue', function () {
+  describe('new Triage()', function (done) {
+    it('should get a gamebot Worker', function () {
+      var triage = new Triage.Triage();
+      var fakeTask = {
+        type: 0,
+        data: {
+          foo: 'bar'
+        },
+        timestamp: 'abcdefg123456'
+      };
+
+      triage.task(fakeTask).then(function (task) {
+        assert.isObject(task);
+      });
+
+      setTimeout(done, 300);
+    });
   });
 });

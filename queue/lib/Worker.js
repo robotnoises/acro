@@ -7,7 +7,8 @@ var Worker = (function () {
     Worker.gameBot = function (data) {
         return new Promise(function (resolve, reject) {
             // TODO: DO SOMETHIN'
-            resolve();
+            console.log('Getting a gameBot...');
+            resolve(data);
         });
     };
     return Worker;

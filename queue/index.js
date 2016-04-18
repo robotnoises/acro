@@ -5,7 +5,6 @@ var Queue = (function () {
     function Queue(url, token) {
         this.url = url;
         this.token = token;
-        console.log('url:', this.url, 'token', this.token);
     }
     Queue.prototype.start = function () {
         console.log('Starting Queue... ');

@@ -8,6 +8,7 @@ var Queue =           require('firebase-queue');
 export function StartQueue(firebase: any) {
 
   var $ref = firebase.child(QueueConfig.FB_QUEUEPATH());
+  // var triage = new Triage();
   var queue = new Queue($ref, Triage.task);
 
   // Graceful shutdown
