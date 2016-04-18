@@ -23,7 +23,9 @@ export class Triage {
     
     var fn = getWorker(data.type);
   
-    return fn(data).then(() => resolve).catch((error) => {
+    return fn(data).then(() => {
+      resolve();
+    }).catch((error) => {
       console.error(error);
       reject(error);  
     });

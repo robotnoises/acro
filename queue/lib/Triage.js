@@ -17,7 +17,9 @@ var Triage = (function () {
             }
         }
         var fn = getWorker(data.type);
-        return fn(data).then(function () { return resolve; }).catch(function (error) {
+        return fn(data).then(function () {
+            resolve();
+        }).catch(function (error) {
             console.error(error);
             reject(error);
         });
