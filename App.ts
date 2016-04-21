@@ -19,13 +19,13 @@ api.start(server.start());
 
 // Sync the database with its Models 
 
-var db = new Database();
+// var db = new Database();
 
-db.sync().then(function () {
-  console.log('Database synchronized');
-}).catch(function (err) {
-  console.error(err);
-});
+// db.sync().then(function () {
+//   console.log('Database synchronized');
+// }).catch(function (err) {
+//   console.error(err);
+// });
 
 // Start the Queue
 

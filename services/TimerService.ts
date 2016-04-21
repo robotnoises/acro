@@ -45,7 +45,8 @@ export class TimerService {
   }
   
   getElapsed() {
-    return Math.floor(this.timer.time / 1000);
+    var elapsed = Math.floor(this.timer.time / 1000);
+    return (elapsed >= 0) ? elapsed : 0;
   }
   
   reset(newOptions?: IOptions) {
@@ -65,8 +66,6 @@ export class TimerService {
   }
   
   onTimerTick(cb: Function) {
-    this.timer.callback = () => {
-      cb(this.getElapsed());
-    };
+    this.timer.callback = cb;
   }
 }
