@@ -26,7 +26,8 @@ export class FirebaseService implements IFirebaseService {
   }
   
   private waitForResponse($ref: any): Promise<Object> {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
+      console.log('ref is...', $ref);
       $ref.once('child_added', ($snap) => {
         resolve($snap.val());
       }, reject);
@@ -34,11 +35,15 @@ export class FirebaseService implements IFirebaseService {
   }
   
   create(path: string, data: Object): Promise<Object> {
-    return this.waitForResponse(this.firebase.child(path).push(data));
+    var $ref = this.firebase.child(path);
+    $ref.push(data);
+    return this.waitForResponse($ref);
   }
   
   createAt(path: string, data: Object): Promise<Object> {
-    return this.waitForResponse(this.firebase.child(path).set(data));
+    var $ref = this.firebase.child(path);
+    $ref.set(data);
+    return this.waitForResponse($ref);
   }
   
   read(path: string):Promise<Object> {
@@ -46,11 +51,12 @@ export class FirebaseService implements IFirebaseService {
   }
   
   update(path: string, data: Object): Promise<Object> {
-    return this.waitForResponse(this.firebase.child(path).update(data));
+    var $ref = this.firebase.child(path);
+    $ref.update(data);
+    return this.waitForResponse($ref);
   }
   
   delete(path: string, data: Object): void {
-    // return this.waitForResponse(this.firebase.child(path).remove());
     this.firebase.child(path).remove();
   }
 }
