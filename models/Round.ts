@@ -20,6 +20,7 @@ export interface IRound {
   letters: ILetter[];
   category: string;
   countdown: number;
+  countdownStart: number;
   startCountdown: Function;
   getRoundViewModel: Function;
 }
@@ -30,6 +31,7 @@ export interface IRoundVM {
   letters: ILetter[];
   category: string;
   countdown: number;
+  countdownStart: number;
 }
 
 export class Round implements IRound {
@@ -39,7 +41,7 @@ export class Round implements IRound {
   letters: ILetter[];
   category: string;
   countdown: number; // In seconds!!!
-  countdownstart: number;
+  countdownStart: number;
   
   private timer: TimerService;
   
@@ -50,7 +52,7 @@ export class Round implements IRound {
       this.stage = ROUND_STAGE.ROUND_PRE
     }
     this.setLetters();
-    this.countdown = this.countdownstart = countdownStart || 30;
+    this.countdown = this.countdownStart = countdownStart || 30;
     this.timer = new TimerService();
     this.scores = {};
     this.category = '';
@@ -86,7 +88,8 @@ export class Round implements IRound {
       scores: this.scores,
       letters: this.letters,
       category: this.category,
-      countdown: this.countdown
+      countdown: this.countdown,
+      countdownStart: this.countdownStart
     };
   }
   
