@@ -9,14 +9,14 @@ var Triage = (function () {
     Triage.task = function (task, progress, resolveTask, rejectTask) {
         function getWorker(taskType) {
             if (taskType === Task_1.TASK_TYPE.GAME) {
-                return Worker_1.Worker.gameWorker;
+                return new Worker_1.Worker().gameWorker;
             }
             else {
                 throw new Error("Task " + taskType + " does not exist.");
             }
         }
         var fn = getWorker(task.type);
-        fn(task)
+        return fn(task)
             .then(function () {
             resolveTask();
         })

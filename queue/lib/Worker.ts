@@ -8,7 +8,7 @@ export class Worker {
   
   constructor() {}
   
-  static gameWorker(task: ITask):Promise<any> {
+  gameWorker(task: ITask):Promise<any> {
     console.log('Getting a gameWorker...');
     return new GameWorker(task.data).go();
   }

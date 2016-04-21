@@ -11,14 +11,11 @@ export class TimerService {
   private options: Object;
   
   constructor(optionOverrides?: IOptions) {
-    this.setOptions(optionOverrides, function (options) {
-      this.timer = new Timer(options);
-      this.timer.complete = this.onTimerComplete;
-      this.timer.callback = this.onTimerTick;
-    }.bind(this));
+    var options = this.setOptions(optionOverrides);
+    this.timer = new Timer(options);
   }
   
-  private setOptions(optionOverrides?: IOptions, callback?: Function) {
+  private setOptions(optionOverrides?: IOptions):Object {
     
     var options = {
       countdown: true,
@@ -30,19 +27,12 @@ export class TimerService {
       options.interval = optionOverrides.interval || options.interval;
     }
     
-    if (callback) {
-      callback(options);
-    }
+    return options;
   }
   
   start(startTime?: number) {
-
-    if (this.timer) {
-      var startAt = startTime || 0;
-      this.timer.start(startAt);
-    } else {
-      throw new Error('Timer is undefined.');
-    }
+    var startAt = startTime || 0;
+    this.timer.start(startAt);
   }
   
   pause():number {
@@ -55,7 +45,7 @@ export class TimerService {
   }
   
   getElapsed() {
-    return this.timer.time;
+    return Math.floor(this.timer.time / 1000);
   }
   
   reset(newOptions?: IOptions) {
@@ -63,23 +53,20 @@ export class TimerService {
     this.timer = null;
     
     if (newOptions) {
-      this.setOptions(newOptions, function (options) {
-        this.timer = new Timer(options);  
-      }.bind(this));  
+      var options = this.setOptions(newOptions);
+      this.timer = new Timer(options);    
     } else {
       this.timer = new Timer(this.options);
     }
   }
   
-  onTimerComplete(cb?: Function) {
-    if (this.timer && cb) {
-      cb(this.timer);
-    }
+  onTimerComplete(cb: Function) {
+    this.timer.complete = cb;
   }
   
-  onTimerTick(cb?: Function) {
-    if (this.timer && cb) {
-      cb(this.timer);  
-    }
+  onTimerTick(cb: Function) {
+    this.timer.callback = () => {
+      cb(this.getElapsed());
+    };
   }
 }

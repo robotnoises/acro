@@ -5,7 +5,7 @@ var GameWorker_1 = require('./../workers/GameWorker');
 var Worker = (function () {
     function Worker() {
     }
-    Worker.gameWorker = function (task) {
+    Worker.prototype.gameWorker = function (task) {
         console.log('Getting a gameWorker...');
         return new GameWorker_1.GameWorker(task.data).go();
     };

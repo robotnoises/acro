@@ -1,30 +1,31 @@
-import {IRound, Round, ROUND_STAGE}  from './Round';
+import {IRoundVM, IRound, Round, ROUND_STAGE}  from './Round';
 import {IPlayer}        from './Player';
-
 
 export interface IGame {
   roomId: string;
-  rounds: IRound[];
-  currentRound: IRound;
+  rounds: IRoundVM[];
+  currentRound: IRoundVM;
   players: any[];
   updateCallback: Function;
   addPlayer(player: Object);
   removePlayer(player: Object);
   nextRound(updateCallback: Function);
+  getData: Function;
 }
 
 export interface IGameData {
   roomId: string;
-  rounds: IRound[];
-  currentRound: IRound;
+  rounds: IRoundVM[];
+  currentRound: IRoundVM;
   players: any[];
 }
 
 export class Game implements IGame {
   
   roomId: string;
-  currentRound: IRound;
-  rounds: IRound[];
+  currentRound: IRoundVM;
+  rounds: IRoundVM[];
+  roundInstance: IRound;
   players: IPlayer[];
   updateCallback: Function;
   
@@ -33,10 +34,13 @@ export class Game implements IGame {
     this.players = [];
     this.roomId = roomId;
     this.updateCallback = updateCallback;
-    this.currentRound = new Round(ROUND_STAGE.ROUND_5); // TODO: Temp
+    this.roundInstance = new Round(ROUND_STAGE.ROUND_5); // todo temp
+    this.currentRound =  this.roundInstance.getRoundViewModel();
     this.rounds.push(this.currentRound);
     this.players = players || null;
-  }
+    
+    this.nextRound(); // TODO: temp?
+ }
   
   getData(): IGameData {
     var data = {
@@ -59,7 +63,8 @@ export class Game implements IGame {
   }
   
   nextRound():void {
-    // do something to advance the round
+    // TODO: do something to advance the round
+    this.roundInstance.startCountdown(this.updateCallback);
     this.updateCallback(this.getData());
   };
 }

@@ -20,6 +20,16 @@ export interface IRound {
   letters: ILetter[];
   category: string;
   countdown: number;
+  startCountdown: Function;
+  getRoundViewModel: Function;
+}
+
+export interface IRoundVM {
+  stage: ROUND_STAGE
+  scores: Object;
+  letters: ILetter[];
+  category: string;
+  countdown: number;
 }
 
 export class Round implements IRound {
@@ -30,15 +40,19 @@ export class Round implements IRound {
   category: string;
   countdown: number;
   
-  constructor(stage?: ROUND_STAGE) {
+  private timer: TimerService;
+  
+  constructor(stage?: ROUND_STAGE, countdownStart?: number) {
     if (stage) {
       this.stage = stage;
     } else {
       this.stage = ROUND_STAGE.ROUND_PRE
     }
-    // Todo: temp
-    this.countdown = 60;
     this.setLetters();
+    this.countdown = countdownStart || 30;
+    this.timer = new TimerService();
+    this.scores = {};
+    this.category = '';
   }
   
   private setLetters():void {
@@ -46,15 +60,15 @@ export class Round implements IRound {
     var letterService = new LetterService();
     var numLetters: number;
     
-    if (ROUND_STAGE.ROUND_1 || ROUND_STAGE.FACEOFF_1) {
+    if (this.stage === ROUND_STAGE.ROUND_1 || this.stage === ROUND_STAGE.FACEOFF_1) {
       numLetters = 3;
-    } else if (ROUND_STAGE.ROUND_2) {
+    } else if (this.stage === ROUND_STAGE.ROUND_2) {
       numLetters = 4;
-    } else if (ROUND_STAGE.ROUND_3 || ROUND_STAGE.FACEOFF_2) {
+    } else if (this.stage === ROUND_STAGE.ROUND_3 || this.stage === ROUND_STAGE.FACEOFF_2) {
       numLetters = 5;
-    } else if (ROUND_STAGE.ROUND_4) {
+    } else if (this.stage === ROUND_STAGE.ROUND_4) {
       numLetters = 6;
-    } else if (ROUND_STAGE.ROUND_5 || ROUND_STAGE.FACEOFF_1) {
+    } else if (this.stage === ROUND_STAGE.ROUND_5 || this.stage === ROUND_STAGE.FACEOFF_1) {
       numLetters = 7;
     } else {
       numLetters = 0;
@@ -62,27 +76,30 @@ export class Round implements IRound {
 
     if (numLetters) {
       this.letters = letterService.getLetters(numLetters);
-      console.log('The letters...', this.letters);
     }
   }
   
-  // Update the countdown
-  updateCountdown(operand: string, callback?: Function):void {
-    var o = parseInt(operand, 10);
-    var newCount = 0;
-    
-    if (this.countdown > 0) {
-      newCount = this.countdown + o;
-      this.countdown = newCount;
-    }
-    
-    if (callback) {
-      callback(newCount);
-    }
+  getRoundViewModel(): IRoundVM {
+    return {
+      stage: this.stage,
+      scores: this.scores,
+      letters: this.letters,
+      category: this.category,
+      countdown: this.countdown
+    };
   }
   
-  // Push to Firebase
-  push() {
-    // Todo: push to Firebase? 
+  // Start the countdown
+  startCountdown(updateCallback: Function):void {
+    
+    // Set-up the callback that updates Firebase
+    this.timer.onTimerTick((elapsed) => {
+      this.countdown = this.countdown - elapsed;
+      console.log('Tick...', this.countdown);
+      updateCallback(this.getRoundViewModel());
+    });
+    
+    // Start it!
+    this.timer.start(this.countdown);
   }
 }

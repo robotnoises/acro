@@ -30,7 +30,7 @@ describe('TimerService', function() {
         assert.isAbove(stoppedAt, 0);
         assert.isBelow(stoppedAt, startAt);
         done();
-      }, 100);
+      }.bind(this), 100);
     });
     
     it('should callback after finished', function (done) {
@@ -40,10 +40,8 @@ describe('TimerService', function() {
       
       // Count down starting @ 100 ms
       Service.start(startAt);
-
-      Service.onTimerComplete(function (timer) {
-        assert.equal(timer.duration_ms, 100);
-        assert.equal(timer.final_time, 0);
+      Service.onTimerComplete(function () {
+        console.log('lets gooooo');
         done();
       });
     });
@@ -61,7 +59,26 @@ describe('TimerService', function() {
         assert.isAbove(stoppedAt, 0);
         assert.isBelow(stoppedAt, startAt + 1);
         done();
-      });
+      }.bind(this));
+    });
+    
+    it('should tick 3 times', function (done) {
+      
+      var Service = new TimerService.TimerService({interval: 100});
+      var startAt = 1000;
+      
+      // Count down starting @ 100ms
+      Service.start(startAt);
+      
+      var numTicks = 0;
+      
+      Service.onTimerTick(function () {
+        numTicks++;
+        console.log('Tick...', numTicks);
+        if (numTicks === 3) {
+          done();
+        }
+      }.bind(this));
     });
     
     it('should reset', function (done) {
@@ -76,7 +93,7 @@ describe('TimerService', function() {
         var stoppedAt = Service.pause();
         Service.reset();
         assert.isAbove(stoppedAt, 0);           // The Original Timer started
-        assert.isBelow(stoppedAt, startAt); // It counted down
+        assert.isBelow(stoppedAt, startAt);     // It counted down
         assert.equal(Service.getElapsed(), 0);  // It was reset
         done();
       }, 10);
