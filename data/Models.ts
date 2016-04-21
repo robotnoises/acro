@@ -8,6 +8,7 @@ var GAME_STATES = [
 ];
 
 var ROUND_STAGES = [
+  'ROUND_PRE',
   'ROUND_1', 
   'ROUND_2', 
   'ROUND_3', 
@@ -16,7 +17,8 @@ var ROUND_STAGES = [
   'ROUND_6', 
   'FACEOFF_1', 
   'FACEOFF_2', 
-  'FACEOFF_3'
+  'FACEOFF_3',
+  'FACEOFF_WINNER'
 ]
 
 var SCORE_BONUSES = [

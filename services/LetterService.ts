@@ -62,9 +62,29 @@ var _letters = {
   105: 'X',
 };
 
+export interface ILetter {
+  char: string;
+  validator: string;
+}
+
+export class Letter implements ILetter {
+  
+  char: string;
+  validator: string;
+  
+  constructor(char: string) {
+    this.char = char;
+    this.validator = this.getValidator(this.char);
+  }
+  
+  private getValidator(char: string):string {
+    return `(\b[${char}])`
+  }
+}
+
 export class LetterService {
   
-  letters: Object;
+  private letters: Object;
   
   constructor() {
     this.letters = _letters;
@@ -74,7 +94,19 @@ export class LetterService {
     return Math.floor(Math.random() * 106);
   }
   
-  choose() {
+  private choose() {
     return this.letters[this.getRandom()];
+  }
+  
+  // @dimension {number} - the # of letters to return
+  getLetters(dimension: number): ILetter[] {
+    
+    var letters = [];
+    
+    for (var i = 0; i < dimension; i++) {
+      letters.push(new Letter(this.choose()));
+    }
+    
+    return letters;
   }
 }

@@ -13,10 +13,10 @@ export class GameWorker implements IWorker {
     this.game = newGame.getData();
   }
   
-  private gameHandler(gameData: Object) {
-    // start a timer, when timer finishes, do something/update
-    console.log('Game data!!!!', gameData);
-  }
+  // private gameHandler(gameData: Object) {
+  //   // start a timer, when timer finishes, do something/update
+  //   console.log('Game data!!!!', gameData);
+  // }
   
   go(): Promise<any> {
     // start the game!

@@ -1,4 +1,6 @@
-import {IRound} from './Round';
+import {IRound, Round, ROUND_STAGE}  from './Round';
+import {IPlayer}        from './Player';
+
 
 export interface IGame {
   roomId: string;
@@ -21,17 +23,19 @@ export interface IGameData {
 export class Game implements IGame {
   
   roomId: string;
-  rounds: IRound[];
   currentRound: IRound;
-  players: any[];
+  rounds: IRound[];
+  players: IPlayer[];
   updateCallback: Function;
   
-  constructor(roomId: string, updateCallback: Function) {
+  constructor(roomId: string, updateCallback: Function, players?: IPlayer[]) {
+    this.rounds = [];
+    this.players = [];
     this.roomId = roomId;
-    this.rounds = null;
-    this.currentRound = null;
-    this.players = null;
     this.updateCallback = updateCallback;
+    this.currentRound = new Round(ROUND_STAGE.ROUND_5); // TODO: Temp
+    this.rounds.push(this.currentRound);
+    this.players = players || null;
   }
   
   getData(): IGameData {
@@ -44,13 +48,13 @@ export class Game implements IGame {
     return data;
   }
   
-  addPlayer(player: Object):void {
-    this.players.push(player);
+  addPlayer(player: IPlayer):void {
+    // this.players.push(player);
     this.updateCallback(this.getData());
   }
   
-  removePlayer(player: Object):void {
-    this.players.pop();
+  removePlayer(player: IPlayer):void {
+    // this.players.pop();
     this.updateCallback(this.getData());
   }
   

@@ -3,7 +3,7 @@ import {Round} from './../models/Round';
 
 // Game BL goes here
 
-export class Game {
+export class GameService {
   
   currentRound: Object;
   rounds: Object;
@@ -12,16 +12,16 @@ export class Game {
   constructor() {
   }
   
-  // @dimension {number} - the # of letters to return
-  getLetters(dimension: number) {
+  // // @dimension {number} - the # of letters to return
+  // getLetters(dimension: number) {
     
-    var letters = [];
-    var letterService = new LetterService();
+  //   var letters = [];
+  //   var letterService = new LetterService();
     
-    for (var i = 0; i < dimension; i++) {
-      letters.push(letterService.choose());
-    }
+  //   for (var i = 0; i < dimension; i++) {
+  //     letters.push(letterService.choose());
+  //   }
     
-    return letters;
-  }
+  //   return letters;
+  // }
 }
