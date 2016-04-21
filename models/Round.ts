@@ -38,7 +38,7 @@ export class Round implements IRound {
   scores: Object; // Todo IScore?
   letters: ILetter[];
   category: string;
-  countdown: number;
+  countdown: number; // In seconds!!!
   
   private timer: TimerService;
   
@@ -91,15 +91,14 @@ export class Round implements IRound {
   
   // Start the countdown
   startCountdown(updateCallback: Function):void {
-    
+
     // Set-up the callback that updates Firebase
     this.timer.onTimerTick((elapsed) => {
-      this.countdown = this.countdown - elapsed;
-      console.log('Tick...', this.countdown);
+      this.countdown--;
       updateCallback(this.getRoundViewModel());
     });
-    
+        
     // Start it!
-    this.timer.start(this.countdown);
+    this.timer.start(this.countdown * 1000);
   }
 }

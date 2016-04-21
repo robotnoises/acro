@@ -12,7 +12,6 @@ export class GameWorker implements IWorker {
   constructor(data: any) {
     this.firebase = new FirebaseService();
     this.game = new Game(data.roomId, (round: IRoundVM) => {
-      console.log('updating...');
       this.firebase.update(`/games/${data.roomId}/currentRound`, round);
     });
     this.gameData = this.game.getData();
@@ -20,12 +19,6 @@ export class GameWorker implements IWorker {
   
   go(): Promise<any> {
     // start the game!
-    return new Promise((resolve, reject) => {
-      // Todo: hmmmm
-      this.firebase.createAt(`/games/${this.gameData.roomId}`, this.gameData);
-      setTimeout(function () {
-        resolve();  
-      }, 10000);
-    });
+    return this.firebase.createAt(`/games/${this.gameData.roomId}`, this.gameData);
   }
 }

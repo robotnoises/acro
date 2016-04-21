@@ -12,7 +12,7 @@ export class Triage {
 
     function getWorker(taskType: TASK_TYPE) {
       if (taskType === TASK_TYPE.GAME) {
-        return new Worker().gameWorker;
+        return Worker.gameWorker;
       } else {
         throw new Error(`Task ${taskType} does not exist.`)
       }
