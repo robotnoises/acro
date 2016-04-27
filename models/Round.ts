@@ -1,4 +1,4 @@
-import {LetterService, ILetter} from './../services/LetterService';
+import {LetterService, ILetters} from './../services/LetterService';
 import {TimerService}           from './../services/TimerService';
 
 export enum ROUND_STAGE {
@@ -17,7 +17,7 @@ export enum ROUND_STAGE {
 export interface IRound {
   stage: ROUND_STAGE
   scores: Object;
-  letters: ILetter[];
+  letters: ILetters;
   category: string;
   countdown: number;
   countdownStart: number;
@@ -28,7 +28,7 @@ export interface IRound {
 export interface IRoundVM {
   stage: ROUND_STAGE
   scores: Object;
-  letters: ILetter[];
+  letters: ILetters;
   category: string;
   countdown: number;
   countdownStart: number;
@@ -38,7 +38,7 @@ export class Round implements IRound {
   
   stage: ROUND_STAGE;
   scores: Object; // Todo IScore?
-  letters: ILetter[];
+  letters: ILetters;
   category: string;
   countdown: number; // In seconds!!!
   countdownStart: number;
@@ -60,7 +60,6 @@ export class Round implements IRound {
   
   private setLetters():void {
     
-    var letterService = new LetterService();
     var numLetters: number;
     
     if (this.stage === ROUND_STAGE.ROUND_1 || this.stage === ROUND_STAGE.FACEOFF_1) {
@@ -78,7 +77,7 @@ export class Round implements IRound {
     }
 
     if (numLetters) {
-      this.letters = letterService.getLetters(numLetters);
+      this.letters = LetterService.getLetters(numLetters);
     }
   }
   

@@ -1,6 +1,8 @@
 import {LetterService} from './LetterService';
 import {Round} from './../models/Round';
 
+// Todo: this may be dead code
+
 // Game BL goes here
 
 export class GameService {

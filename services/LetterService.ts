@@ -62,49 +62,55 @@ var _letters = {
   105: 'X',
 };
 
-export interface ILetter {
-  char: string;
+export interface ILetters {
+  chars: string[];
   validator: string;
+  add: Function;
 }
 
-export class Letter implements ILetter {
+export class Letters implements ILetters {
   
-  char: string;
+  chars: string[];
   validator: string;
   
-  constructor(char: string) {
-    this.char = char;
-    this.validator = this.getValidator(this.char);
+  constructor() {
+    this.chars = [];
+    this.validator = '';
   }
   
-  private getValidator(char: string):string {
-    return `(\b[${char}])`
+  private removeLastTwoChars(input: string): string {
+    if (input && input.length > 0) {
+      return input.slice(0, -2);
+    } else {
+      return '';
+    }
+  }
+
+  add(letter: string): void {
+    this.chars.push(letter);
+    // Each time we add to the validator regex, we need to update the existing
+    if (this.validator) {
+      // We only want a space to be optional after the last word
+      this.validator = this.removeLastTwoChars(this.validator) + '+' + `[${letter}]+[^\\s]*\\s*$`;
+    } else {
+      this.validator = `[${letter}]+[^\\s]*\\s*$`;
+    }
   }
 }
 
 export class LetterService {
-  
-  private letters: Object;
-  
-  constructor() {
-    this.letters = _letters;
-  }
-  
-  private getRandom() {
+
+  static getRandomLetter() {
     return Math.floor(Math.random() * 106);
   }
   
-  private choose() {
-    return this.letters[this.getRandom()];
-  }
-  
   // @dimension {number} - the # of letters to return
-  getLetters(dimension: number): ILetter[] {
+  static getLetters(dimension: number): ILetters {
     
-    var letters = [];
+    var letters = new Letters();
     
     for (var i = 0; i < dimension; i++) {
-      letters.push(new Letter(this.choose()));
+      letters.add(_letters[this.getRandomLetter()]);
     }
     
     return letters;
