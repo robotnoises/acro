@@ -23,6 +23,7 @@ export interface IRound {
   countdownStart: number;
   startCountdown: Function;
   getRoundViewModel: Function;
+  playing: boolean;
 }
 
 export interface IRoundVM {
@@ -32,6 +33,7 @@ export interface IRoundVM {
   category: string;
   countdown: number;
   countdownStart: number;
+  playing: boolean;
 }
 
 export class Round implements IRound {
@@ -42,6 +44,7 @@ export class Round implements IRound {
   category: string;
   countdown: number; // In seconds!!!
   countdownStart: number;
+  playing: boolean;
   
   private timer: TimerService;
   
@@ -56,6 +59,7 @@ export class Round implements IRound {
     this.timer = new TimerService();
     this.scores = {};
     this.category = '';
+    this.playing = false;
   }
   
   private setLetters():void {
@@ -88,7 +92,8 @@ export class Round implements IRound {
       letters: this.letters,
       category: this.category,
       countdown: this.countdown,
-      countdownStart: this.countdownStart
+      countdownStart: this.countdownStart,
+      playing: this.playing
     };
   }
   
@@ -100,7 +105,14 @@ export class Round implements IRound {
       this.countdown--;
       updateCallback(this.getRoundViewModel());
     });
-        
+    
+    this.timer.onTimerComplete(() => {
+      this.playing = false;
+      updateCallback(this.getRoundViewModel());
+    });
+    
+    this.playing = true;
+    
     // Start it!
     this.timer.start(this.countdown * 1000);
   }
