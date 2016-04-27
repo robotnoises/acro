@@ -66,6 +66,12 @@ export interface ILetters {
   chars: string[];
   validator: string;
   add: Function;
+  getLettersViewModel: Function;
+}
+
+export interface ILettersVM {
+  chars: string[];
+  validator: string;
 }
 
 export class Letters implements ILetters {
@@ -95,6 +101,13 @@ export class Letters implements ILetters {
     } else {
       this.validator = `[${letter}]+[^\\s]*\\s*$`;
     }
+  }
+  
+  getLettersViewModel(): ILettersVM {
+    return {
+      chars: this.chars,
+      validator: this.validator
+    };
   }
 }
 
