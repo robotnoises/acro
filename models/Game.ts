@@ -1,29 +1,34 @@
-import {IRoundVM, IRound, Round, ROUND_STAGE}  from './Round';
-import {IPlayer}        from './Player';
+import {
+  IRoundVM, 
+  IRound, 
+  Round, 
+  ROUNDTYPE
+}                 from './Round';
+import {IPlayer}  from './Player';
 
 export interface IGame {
   roomId: string;
   rounds: IRoundVM[];
-  currentRound: IRoundVM;
+  round: IRoundVM;
   players: any[];
   updateCallback: Function;
   addPlayer(player: Object);
   removePlayer(player: Object);
-  nextRound(updateCallback: Function);
   getData: Function;
+  start: Function;
 }
 
 export interface IGameData {
   roomId: string;
   rounds: IRoundVM[];
-  currentRound: IRoundVM;
+  round: IRoundVM;
   players: any[];
 }
 
 export class Game implements IGame {
   
   roomId: string;
-  currentRound: IRoundVM;
+  round: IRoundVM;
   rounds: IRoundVM[];
   roundInstance: IRound;
   players: IPlayer[];
@@ -34,37 +39,33 @@ export class Game implements IGame {
     this.players = [];
     this.roomId = roomId;
     this.updateCallback = updateCallback;
-    this.roundInstance = new Round(ROUND_STAGE.ROUND_5); // todo temp
-    this.currentRound =  this.roundInstance.getRoundViewModel();
-    this.rounds.push(this.currentRound);
+    this.roundInstance = new Round(ROUNDTYPE.ROUND_PRE);
+    this.round =  this.roundInstance.getRoundViewModel();
+    this.rounds.push(this.round);
     this.players = players || null;
-    
-    this.nextRound(); // TODO: temp?
- }
+  }
+  
+  start(): void {
+    this.roundInstance.startCountdown(this.updateCallback, 30);
+  }
   
   getData(): IGameData {
     var data = {
       roomId: this.roomId,
       rounds: this.rounds,
-      currentRound: this.currentRound,
+      round: this.round,
       players: this.players
     };
     return data;
   }
   
-  addPlayer(player: IPlayer):void {
+  addPlayer(player: IPlayer): void {
     // this.players.push(player);
     this.updateCallback(this.getData());
   }
   
-  removePlayer(player: IPlayer):void {
+  removePlayer(player: IPlayer): void {
     // this.players.pop();
     this.updateCallback(this.getData());
   }
-  
-  nextRound():void {
-    // TODO: do something to advance the round
-    this.roundInstance.startCountdown(this.updateCallback);
-    this.updateCallback(this.getData());
-  };
 }

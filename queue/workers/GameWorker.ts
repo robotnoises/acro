@@ -10,15 +10,21 @@ export class GameWorker implements IWorker {
   firebase: IFirebaseService;
   
   constructor(data: any) {
+    // The Firebase Instance
     this.firebase = new FirebaseService();
+    
+    // The Game Object
     this.game = new Game(data.roomId, (round: IRoundVM) => {
-      this.firebase.update(`/games/${data.roomId}/currentRound`, round);
+      this.firebase.update(`/games/${data.roomId}/round`, round);
     });
+    
+    // ViewModel of the Game
     this.gameData = this.game.getData();
   }
   
   go(): Promise<any> {
-    // start the game!
+    // Let's go!!!!
+    this.game.start();
     return this.firebase.createAt(`/games/${this.gameData.roomId}`, this.gameData);
   }
 }

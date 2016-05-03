@@ -1,7 +1,7 @@
-import {LetterService, ILettersVM} from './../services/LetterService';
-import {TimerService}           from './../services/TimerService';
+import {LetterService, ILettersVM}  from './../services/LetterService';
+import {TimerService}               from './../services/TimerService';
 
-export enum ROUND_STAGE {
+export enum ROUNDTYPE {
   ROUND_PRE,
   ROUND_1, 
   ROUND_2, 
@@ -15,7 +15,7 @@ export enum ROUND_STAGE {
 }
 
 export interface IRound {
-  stage: ROUND_STAGE
+  current: ROUNDTYPE
   scores: Object;
   letters: ILettersVM;
   category: string;
@@ -27,7 +27,7 @@ export interface IRound {
 }
 
 export interface IRoundVM {
-  stage: ROUND_STAGE
+  current: ROUNDTYPE
   scores: Object;
   letters: ILettersVM;
   category: string;
@@ -38,7 +38,7 @@ export interface IRoundVM {
 
 export class Round implements IRound {
   
-  stage: ROUND_STAGE;
+  current: ROUNDTYPE;
   scores: Object; // Todo IScore?
   letters: ILettersVM;
   category: string;
@@ -48,14 +48,14 @@ export class Round implements IRound {
   
   private timer: TimerService;
   
-  constructor(stage?: ROUND_STAGE, countdownStart?: number) {
+  constructor(stage?: ROUNDTYPE) {
     if (stage) {
-      this.stage = stage;
+      this.current = stage;
     } else {
-      this.stage = ROUND_STAGE.ROUND_PRE
+      this.current = ROUNDTYPE.ROUND_PRE
     }
     this.setLetters();
-    this.countdown = this.countdownStart = countdownStart || 30;
+    this.countdown = this.countdownStart = 30;
     this.timer = new TimerService();
     this.scores = {};
     this.category = '';
@@ -66,15 +66,15 @@ export class Round implements IRound {
     
     var numLetters: number;
     
-    if (this.stage === ROUND_STAGE.ROUND_1 || this.stage === ROUND_STAGE.FACEOFF_1) {
+    if (this.current === ROUNDTYPE.ROUND_1 || this.current === ROUNDTYPE.FACEOFF_1) {
       numLetters = 3;
-    } else if (this.stage === ROUND_STAGE.ROUND_2) {
+    } else if (this.current === ROUNDTYPE.ROUND_2) {
       numLetters = 4;
-    } else if (this.stage === ROUND_STAGE.ROUND_3 || this.stage === ROUND_STAGE.FACEOFF_2) {
+    } else if (this.current === ROUNDTYPE.ROUND_3 || this.current === ROUNDTYPE.FACEOFF_2) {
       numLetters = 5;
-    } else if (this.stage === ROUND_STAGE.ROUND_4) {
+    } else if (this.current === ROUNDTYPE.ROUND_4) {
       numLetters = 6;
-    } else if (this.stage === ROUND_STAGE.ROUND_5 || this.stage === ROUND_STAGE.FACEOFF_1) {
+    } else if (this.current === ROUNDTYPE.ROUND_5 || this.current === ROUNDTYPE.FACEOFF_1) {
       numLetters = 7;
     } else {
       numLetters = 0;
@@ -82,12 +82,14 @@ export class Round implements IRound {
 
     if (numLetters) {
       this.letters = LetterService.getLetters(numLetters).getLettersViewModel();
+    } else {
+      this.letters = null; // A non-playing round
     }
   }
   
   getRoundViewModel(): IRoundVM {
     return {
-      stage: this.stage,
+      current: this.current,
       scores: this.scores,
       letters: this.letters,
       category: this.category,
@@ -98,12 +100,15 @@ export class Round implements IRound {
   }
   
   // Start the countdown
-  startCountdown(updateCallback: Function): void {
-
-    // Set-up the callback that updates Firebase
+  startCountdown(updateCallback: Function, startAt?: number): void {
+    
+    this.countdownStart = this.countdown = startAt || 30;
+    
     this.timer.onTimerTick(() => {
-      this.countdown--;
       updateCallback(this.getRoundViewModel());
+      if (this.countdown >= 0) {
+        this.countdown--;
+      }
     });
     
     this.timer.onTimerComplete(() => {
@@ -117,3 +122,13 @@ export class Round implements IRound {
     this.timer.start(this.countdown * 1000);
   }
 }
+
+
+  // private getCountdownForRound(currentRound: ROUNDTYPE): number {
+  //   // A "playing" round lasts for 60 seconds. All others last 30
+  //   if (currentRound > ROUNDTYPE.ROUND_PRE && currentRound <= ROUNDTYPE.FACEOFF_3) {
+  //     return 60;
+  //   } else {
+  //     return 30;
+  //   }
+  // }
