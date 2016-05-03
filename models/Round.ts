@@ -82,7 +82,7 @@ export class Round implements IRound {
       numLetters = 5;
     } else if (this.current === ROUNDTYPE.ROUND_4) {
       numLetters = 6;
-    } else if (this.current === ROUNDTYPE.ROUND_5 || this.current === ROUNDTYPE.FACEOFF_1) {
+    } else if (this.current === ROUNDTYPE.ROUND_5 || this.current === ROUNDTYPE.FACEOFF_3) {
       numLetters = 7;
     } else {
       numLetters = 0;
