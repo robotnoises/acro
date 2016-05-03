@@ -113,8 +113,8 @@ export class Letters implements ILetters {
 
 export class LetterService {
 
-  static getRandomLetter() {
-    return Math.floor(Math.random() * 106);
+  static getRandom(max) {
+    return Math.floor(Math.random() * max);
   }
   
   // @dimension {number} - the # of letters to return
@@ -123,7 +123,8 @@ export class LetterService {
     var letters = new Letters();
     
     for (var i = 0; i < dimension; i++) {
-      letters.add(_letters[this.getRandomLetter()]);
+      var letter = _letters[this.getRandom(Object.keys(_letters).length)];
+      letters.add(letter);
     }
     
     return letters;
