@@ -1,7 +1,7 @@
 import {IGame, IGameData, Game} from './../../models/Game';
 import {IFirebaseService, FirebaseService} from './../services/FirebaseService';
 import {IWorker} from './IWorker';
-import {IRoundVM} from './../../models/Round';
+import {IRound} from './../../models/Round';
 
 export class GameWorker implements IWorker {
   
@@ -14,8 +14,10 @@ export class GameWorker implements IWorker {
     this.firebase = new FirebaseService();
     
     // The Game Object
-    this.game = new Game(data.roomId, (round: IRoundVM) => {
+    this.game = new Game(data.roomId, (round: IRound) => {
       this.firebase.update(`/games/${data.roomId}/round`, round);
+    }, (round: IRound) => {
+      round.next();
     });
     
     // ViewModel of the Game

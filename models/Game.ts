@@ -8,10 +8,11 @@ import {IPlayer}  from './Player';
 
 export interface IGame {
   roomId: string;
-  rounds: IRoundVM[];
-  round: IRoundVM;
+  rounds: IRound[];
+  round: IRound;
   players: any[];
   updateCallback: Function;
+  nextRoundCallback: Function;
   addPlayer(player: Object);
   removePlayer(player: Object);
   getData: Function;
@@ -28,25 +29,27 @@ export interface IGameData {
 export class Game implements IGame {
   
   roomId: string;
-  round: IRoundVM;
-  rounds: IRoundVM[];
+  round: IRound;
+  rounds: IRound[];
   roundInstance: IRound;
   players: IPlayer[];
   updateCallback: Function;
+  nextRoundCallback: Function;
   
-  constructor(roomId: string, updateCallback: Function, players?: IPlayer[]) {
+  constructor(roomId: string, updateCallback: Function, nextRoundCallback: Function, players?: IPlayer[]) {
     this.rounds = [];
     this.players = [];
     this.roomId = roomId;
     this.updateCallback = updateCallback;
-    this.roundInstance = new Round(ROUNDTYPE.ROUND_PRE);
+    this.nextRoundCallback = nextRoundCallback;
+    this.roundInstance = new Round(this.updateCallback, this.nextRoundCallback);
     this.round =  this.roundInstance.getRoundViewModel();
     this.rounds.push(this.round);
     this.players = players || null;
   }
   
   start(): void {
-    this.roundInstance.startCountdown(this.updateCallback, 30);
+    this.roundInstance.start(30);
   }
   
   getData(): IGameData {

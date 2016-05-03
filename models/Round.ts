@@ -18,11 +18,14 @@ export interface IRound {
   current: ROUNDTYPE
   scores: Object;
   letters: ILettersVM;
+  update: Function;
+  done: Function;
   category: string;
   countdown: number;
   countdownStart: number;
-  startCountdown: Function;
+  start: Function;
   getRoundViewModel: Function;
+  next: Function;
   playing: boolean;
 }
 
@@ -41,6 +44,8 @@ export class Round implements IRound {
   current: ROUNDTYPE;
   scores: Object; // Todo IScore?
   letters: ILettersVM;
+  update: Function;
+  done: Function;
   category: string;
   countdown: number; // In seconds!!!
   countdownStart: number;
@@ -48,18 +53,21 @@ export class Round implements IRound {
   
   private timer: TimerService;
   
-  constructor(stage?: ROUNDTYPE) {
-    if (stage) {
-      this.current = stage;
-    } else {
-      this.current = ROUNDTYPE.ROUND_PRE
-    }
-    this.setLetters();
+  constructor(update: Function, done: Function) {
+    this.current = ROUNDTYPE.ROUND_PRE
+    this.update = update;
+    this.done = done;
     this.countdown = this.countdownStart = 30;
     this.timer = new TimerService();
     this.scores = {};
     this.category = '';
     this.playing = false;
+    this.createRound();
+  }
+  
+  // Set-up a round
+  private createRound() {
+    this.setLetters();
   }
   
   private setLetters():void {
@@ -87,6 +95,15 @@ export class Round implements IRound {
     }
   }
   
+  private getCountdownForRound(currentRound: ROUNDTYPE): number {
+    // A "playing" round lasts for 60 seconds. All others last 30
+    if (currentRound > ROUNDTYPE.ROUND_PRE && currentRound <= ROUNDTYPE.FACEOFF_3) {
+      return 60;
+    } else {
+      return 30;
+    }
+  }
+  
   getRoundViewModel(): IRoundVM {
     return {
       current: this.current,
@@ -100,20 +117,21 @@ export class Round implements IRound {
   }
   
   // Start the countdown
-  startCountdown(updateCallback: Function, startAt?: number): void {
+  start(startAt?: number): void {
     
     this.countdownStart = this.countdown = startAt || 30;
     
     this.timer.onTimerTick(() => {
-      updateCallback(this.getRoundViewModel());
       if (this.countdown >= 0) {
         this.countdown--;
       }
+      this.update(this.getRoundViewModel());
     });
     
     this.timer.onTimerComplete(() => {
       this.playing = false;
-      updateCallback(this.getRoundViewModel());
+      this.update(this.getRoundViewModel());
+      this.done(this);
     });
     
     this.playing = true;
@@ -121,14 +139,14 @@ export class Round implements IRound {
     // Start it!
     this.timer.start(this.countdown * 1000);
   }
+  
+  next(): void {
+    if (this.current !== ROUNDTYPE.FACEOFF_WINNER) {
+      this.current = this.current + 1;
+      this.setLetters();
+      this.start(this.getCountdownForRound(this.current));
+    } else {
+      // todo: end the game somehow
+    }
+  }
 }
-
-
-  // private getCountdownForRound(currentRound: ROUNDTYPE): number {
-  //   // A "playing" round lasts for 60 seconds. All others last 30
-  //   if (currentRound > ROUNDTYPE.ROUND_PRE && currentRound <= ROUNDTYPE.FACEOFF_3) {
-  //     return 60;
-  //   } else {
-  //     return 30;
-  //   }
-  // }
