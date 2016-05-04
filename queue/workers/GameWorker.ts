@@ -33,7 +33,7 @@ export class GameWorker implements IWorker {
     
     // The Firebase Instance
     this.firebase = new FirebaseService();
-    
+
     // The Game Object
     this.game = new Game(data.roomId, (round: IRound) => {
       this.firebase.update(`/games/${data.roomId}/round`, round);

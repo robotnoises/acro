@@ -204,8 +204,11 @@ export class Round implements IRound {
   // Start the countdown
   start(startAt?: number): void {
     
+    // Wait a few seconds before starting the Timer
+    let WAIT = 3000;
+    
     this.countdownStart = this.countdown = startAt || 30;
-    this.playing = true;
+    this.updateCallback(this.getRoundViewModel());
     
     this.timer.onTimerTick(() => {
       if (this.countdown >= 0) {
@@ -221,7 +224,11 @@ export class Round implements IRound {
     });
     
     // Start it!
-    this.timer.start(this.countdown * 1000);
+    var timeout = setTimeout(() => {
+      this.playing = true;
+      this.timer.start(this.countdown * 1000);
+      clearTimeout(timeout);
+      }, WAIT);
   }
   
   // Advance to the next Round
@@ -232,6 +239,7 @@ export class Round implements IRound {
       this.start(this.getCountdownForRound(this.current));
     } else {
       // todo: end the game somehow
+      console.log('Game over, man');
     }
   }
 }
