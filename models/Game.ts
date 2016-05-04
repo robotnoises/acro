@@ -34,7 +34,6 @@ export interface IGame {
   roomId: string;
   status: GAME_STATUS;
   roundTracker: IRound;
-  players: any[]; // Todo, an object with each score?
   updateCallback();
   nextRoundCallback();
   start();
@@ -52,7 +51,6 @@ export interface IGameVM {
   roomId: string;
   status: GAME_STATUS;
   round: IRoundVM;
-  players: any[];
 }
 
 /**
@@ -67,14 +65,12 @@ export interface IGameVM {
  * @param {string} roomId - The id of the Room the Game is associated with
  * @param {Function} updateCallback - A callback function to handle updating Firebase when data changes
  * @param {Function} nextRoundCallback - A callback function to handle advancing to the next Round
- * @param {IPlayer[]} players (optional for now) - The initial players in the Game
  * 
  * Properties:
  * 
  * @prop {string} roomId - The id of the Room the Game is associated with
  * @prop {GAME_STATUS} status - The Game's status
  * @prop {IRound} roundTracker - Tracks the state of the Game's Rounds
- * @prop {IPlayer[]} players (optional for now) - The initial players in the Game
  * 
  * Methods:
  * 
@@ -87,16 +83,14 @@ export class Game implements IGame {
   roomId: string;
   status: GAME_STATUS;
   roundTracker: IRound;
-  players: IPlayer[];
   updateCallback: any;
   nextRoundCallback: any;
   
-  constructor(roomId: string, updateCallback: Function, nextRoundCallback: Function, player?: IPlayer) {
+  constructor(roomId: string, updateCallback: Function, nextRoundCallback: Function) {
     this.roomId = roomId;
     this.status = GAME_STATUS.INACTIVE;
     this.updateCallback = updateCallback;
     this.nextRoundCallback = nextRoundCallback;
-    this.players = [];
     this.roundTracker = new Round(this.updateCallback, this.nextRoundCallback);
   }
   
@@ -110,8 +104,7 @@ export class Game implements IGame {
     return {
       roomId: this.roomId,
       status: this.status,
-      round: this.roundTracker.getRoundViewModel(),
-      players: this.players
+      round: this.roundTracker.getRoundViewModel()
     };
   }
 }
