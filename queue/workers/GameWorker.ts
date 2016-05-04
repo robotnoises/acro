@@ -1,4 +1,4 @@
-import {IGame, IGameData, Game} from './../../models/Game';
+import {IGame, IGameVM, Game} from './../../models/Game';
 import {IFirebaseService, FirebaseService} from './../services/FirebaseService';
 import {IWorker} from './IWorker';
 import {IRound} from './../../models/Round';
@@ -6,10 +6,11 @@ import {IRound} from './../../models/Round';
 export class GameWorker implements IWorker {
   
   game: IGame;
-  gameData: IGameData;
+  gameData: IGameVM;
   firebase: IFirebaseService;
   
   constructor(data: any) {
+    
     // The Firebase Instance
     this.firebase = new FirebaseService();
     
@@ -24,8 +25,8 @@ export class GameWorker implements IWorker {
     this.gameData = this.game.getData();
   }
   
+  // Let's go!!!!
   go(): Promise<any> {
-    // Let's go!!!!
     this.game.start();
     return this.firebase.createAt(`/games/${this.gameData.roomId}`, this.gameData);
   }
