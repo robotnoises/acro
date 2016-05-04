@@ -175,6 +175,8 @@ export class Round implements IRound {
     } else {
       this.letters = null; // A non-playing round
     }
+    
+    this.updateCallback(this.getRoundViewModel());
   }
   
   // 60 seconds for playing Rounds, otherwise it's 30
