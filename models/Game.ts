@@ -33,14 +33,12 @@ export enum GAME_STATUS {
 export interface IGame {
   roomId: string;
   status: GAME_STATUS;
-  round: IRound;
+  roundTracker: IRound;
   players: any[]; // Todo, an object with each score?
-  addPlayer(player: Object);
-  removePlayer(player: Object);
   updateCallback();
   nextRoundCallback();
-  getData();
   start();
+  getData();
 }
 
 /**
@@ -64,17 +62,31 @@ export interface IGameVM {
  * including its associated Room, its status (GAME_STATUS), its round information,
  * the players involved in the Game.
  * 
+ * Constructor:
+ * 
  * @param {string} roomId - The id of the Room the Game is associated with
  * @param {Function} updateCallback - A callback function to handle updating Firebase when data changes
  * @param {Function} nextRoundCallback - A callback function to handle advancing to the next Round
  * @param {IPlayer[]} players (optional for now) - The initial players in the Game
+ * 
+ * Properties:
+ * 
+ * @prop {string} roomId - The id of the Room the Game is associated with
+ * @prop {GAME_STATUS} status - The Game's status
+ * @prop {IRound} roundTracker - Tracks the state of the Game's Rounds
+ * @prop {IPlayer[]} players (optional for now) - The initial players in the Game
+ * 
+ * Methods:
+ * 
+ * @method start(): void - Start the Game
+ * @method getData(): IGameVM - Get a snapshot of the Game's data
  */
 
 export class Game implements IGame {
   
   roomId: string;
   status: GAME_STATUS;
-  round: IRound;
+  roundTracker: IRound;
   players: IPlayer[];
   updateCallback: any;
   nextRoundCallback: any;
@@ -85,34 +97,21 @@ export class Game implements IGame {
     this.updateCallback = updateCallback;
     this.nextRoundCallback = nextRoundCallback;
     this.players = [];
-    this.round = new Round(this.updateCallback, this.nextRoundCallback);
+    this.roundTracker = new Round(this.updateCallback, this.nextRoundCallback);
   }
   
   // Start the Game!
   start(): void {
-    this.round.start(30);
+    this.roundTracker.start(30);
   }
   
   // Get the ViewModel version of the Game in its current state
   getData(): IGameVM {
-    var data = {
+    return {
       roomId: this.roomId,
       status: this.status,
-      round: this.round.getRoundViewModel(),
+      round: this.roundTracker.getRoundViewModel(),
       players: this.players
     };
-    return data;
-  }
-  
-  // Add a player to the Game
-  addPlayer(player: IPlayer): void {
-    // todo: add a player
-    this.updateCallback(this.getData());
-  }
-  
-  // Remove a player from the Game
-  removePlayer(player: IPlayer): void {
-    // todo: remove a player
-    this.updateCallback(this.getData());
   }
 }
