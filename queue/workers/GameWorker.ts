@@ -1,13 +1,33 @@
+/**
+ * GameWorker.ts
+ * 
+ * Anything related to the GameWorker class.
+ */
+
 import {IGame, IGameVM, Game} from './../../models/Game';
 import {IFirebaseService, FirebaseService} from './../services/FirebaseService';
 import {IWorker} from './IWorker';
 import {IRound} from './../../models/Round';
 
+/**
+ * GameWorker
+ * 
+ * A Worker responsible for a Game instance's timing and updates.
+ * 
+ * Constructor:
+ * 
+ * @param {any} data - Task related to the construction of a GameWorker
+ * 
+ * Methods:
+ * 
+ * @method go(): void - Start the Game
+ */
+
 export class GameWorker implements IWorker {
   
-  game: IGame;
-  gameData: IGameVM;
   firebase: IFirebaseService;
+  
+  private game: IGame;
   
   constructor(data: any) {
     
@@ -20,14 +40,12 @@ export class GameWorker implements IWorker {
     }, (round: IRound) => {
       round.next();
     });
-    
-    // ViewModel of the Game
-    this.gameData = this.game.getData();
   }
   
   // Let's go!!!!
   go(): Promise<any> {
     this.game.start();
-    return this.firebase.createAt(`/games/${this.gameData.roomId}`, this.gameData);
+    var gameData = this.game.getData();
+    return this.firebase.createAt(`/games/${gameData.roomId}`, gameData);
   }
 }

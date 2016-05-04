@@ -5,7 +5,6 @@
  */
 
 import {IRoundVM, IRound, Round, ROUND_TYPE} from './Round';
-import {IPlayer} from './Player';
 
 /**
  * GAME_STATUS
