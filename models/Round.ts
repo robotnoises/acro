@@ -1,7 +1,30 @@
+/**
+ * Round.ts
+ * 
+ * Any classes, enums, or interfaces relating to the Round of a Game.
+ */
+
 import {LetterService, ILettersVM}  from './../services/LetterService';
 import {TimerService}               from './../services/TimerService';
 
-export enum ROUNDTYPE {
+/**
+ * ROUND_TYPE
+ * 
+ * An enum representing each possible Round.
+ * 
+ * ROUND_PRE - An idle period before the playing portion of a Game
+ * ROUND_1 - The first "playing" Round, three letters
+ * ROUND_2 - The second "playing" Round, four letters
+ * ROUND_3 - ... five letters
+ * ROUND_4 - ... six letters
+ * ROUND_5 - ... seven letters
+ * FACEOFF_1 - The first Faceoff Round between the top two players, three letters
+ * FACEOFF_2 - The second..., five letters
+ * FACEOFF_3 - The last..., seven letters
+ * FACEOFF_WINNER - An idle period after the Game has finished. Good job winner!
+ */
+
+export enum ROUND_TYPE {
   ROUND_PRE,
   ROUND_1, 
   ROUND_2, 
@@ -14,51 +37,108 @@ export enum ROUNDTYPE {
   FACEOFF_WINNER
 }
 
-export interface IRound {
-  current: ROUNDTYPE
-  scores: Object;
-  letters: ILettersVM;
-  update: Function;
-  done: Function;
-  category: string;
-  countdown: number;
-  countdownStart: number;
-  start: Function;
-  getRoundViewModel: Function;
-  next: Function;
-  playing: boolean;
+/**
+ * ROUND_STATUS
+ * 
+ * An enum representing a portion of the Round.
+ * 
+ * IDLE - Nothing is happening
+ * PLAYING - Players are currently entering their answers
+ * VOTING - Players are voting for their favorite answer
+ * RESULTS - Tally-up the votes, display the results
+ */
+
+export enum ROUND_STATUS {
+  IDLE,
+  PLAYING,
+  VOTING,
+  RESULTS
 }
 
-export interface IRoundVM {
-  current: ROUNDTYPE
-  scores: Object;
+/**
+ * IRound
+ * 
+ * An interface for Round classes.
+ */
+
+export interface IRound {
+  current: ROUND_TYPE;
+  status: ROUND_STATUS;
+  playing: boolean;
+  scores: Object; // todo
   letters: ILettersVM;
   category: string;
   countdown: number;
   countdownStart: number;
-  playing: boolean;
+  start(startAt?: number);
+  getRoundViewModel();
+  updateCallback();
+  doneCallback();
+  next();
 }
+
+/**
+ * IRoundVM
+ * 
+ * An interfact for Round ViewModels. Any data meant to be persisted in
+ * Firebase should be included here. No Functions.
+ */
+
+export interface IRoundVM {
+  current: ROUND_TYPE;
+  status: ROUND_STATUS;
+  playing: boolean;
+  scores: Object; // todo
+  letters: ILettersVM;
+  category: string;
+  countdown: number;
+  countdownStart: number;
+}
+
+/**
+ * Round
+ * 
+ * A class that tracks Round data. A Round object encapulates data for all rounds.
+ *
+ * Constructor:
+ * 
+ * @param {Function} updateCallback - handler function to update Firebase when the data changes
+ * @param {Function} doneCallback - handler function to signal the Round is done
+ * 
+ * Properties:
+ * 
+ * @prop {ROUND_TYPE} current - The current Round
+ * @prop {ROUND_STATUS} status - What's happening in the current Round
+ * @prop {boolean} playing - Are we playing or not?
+ * @prop {Object} scores - Each player's score for the Round
+ * @prop {ILettersVM} letters - The Letters (if any) for the Round
+ * @prop {string} category - A prompt for players to use while playing a Round
+ * @prop {number} countdown - Current countdown tick value
+ * @prop {number} countdownStart - What number did the Timer start on?
+ */
 
 export class Round implements IRound {
   
-  current: ROUNDTYPE;
-  scores: Object; // Todo IScore?
+  current: ROUND_TYPE;
+  status: ROUND_STATUS;
+  playing: boolean;
+  scores: Object; // todo IScore?
   letters: ILettersVM;
-  update: Function;
-  done: Function;
   category: string;
   countdown: number; // In seconds!!!
   countdownStart: number;
-  playing: boolean;
-  
+  updateCallback: any;
+  doneCallback: any;
+
   private timer: TimerService;
   
-  constructor(update: Function, done: Function) {
-    this.current = ROUNDTYPE.ROUND_PRE
-    this.update = update;
-    this.done = done;
+  constructor(updateCallback: Function, doneCallback: Function) {
+    this.current = ROUND_TYPE.ROUND_PRE
+    this.updateCallback = updateCallback;
+    this.doneCallback = doneCallback;
     this.countdown = this.countdownStart = 30;
     this.timer = new TimerService();
+    this.status = ROUND_STATUS.IDLE;
     this.scores = {};
     this.category = '';
     this.playing = false;
@@ -66,23 +146,25 @@ export class Round implements IRound {
   }
   
   // Set-up a round
-  private createRound() {
+  private createRound(): void {
+    this.status = ROUND_STATUS.PLAYING;
     this.setLetters();
   }
   
-  private setLetters():void {
+  // Get the letters for a Round
+  private setLetters(): void {
     
     var numLetters: number;
     
-    if (this.current === ROUNDTYPE.ROUND_1 || this.current === ROUNDTYPE.FACEOFF_1) {
+    if (this.current === ROUND_TYPE.ROUND_1 || this.current === ROUND_TYPE.FACEOFF_1) {
       numLetters = 3;
-    } else if (this.current === ROUNDTYPE.ROUND_2) {
+    } else if (this.current === ROUND_TYPE.ROUND_2) {
       numLetters = 4;
-    } else if (this.current === ROUNDTYPE.ROUND_3 || this.current === ROUNDTYPE.FACEOFF_2) {
+    } else if (this.current === ROUND_TYPE.ROUND_3 || this.current === ROUND_TYPE.FACEOFF_2) {
       numLetters = 5;
-    } else if (this.current === ROUNDTYPE.ROUND_4) {
+    } else if (this.current === ROUND_TYPE.ROUND_4) {
       numLetters = 6;
-    } else if (this.current === ROUNDTYPE.ROUND_5 || this.current === ROUNDTYPE.FACEOFF_3) {
+    } else if (this.current === ROUND_TYPE.ROUND_5 || this.current === ROUND_TYPE.FACEOFF_3) {
       numLetters = 7;
     } else {
       numLetters = 0;
@@ -95,18 +177,21 @@ export class Round implements IRound {
     }
   }
   
-  private getCountdownForRound(currentRound: ROUNDTYPE): number {
+  // 60 seconds for playing Rounds, otherwise it's 30
+  private getCountdownForRound(currentRound: ROUND_TYPE): number {
     // A "playing" round lasts for 60 seconds. All others last 30
-    if (currentRound > ROUNDTYPE.ROUND_PRE && currentRound <= ROUNDTYPE.FACEOFF_3) {
+    if (currentRound > ROUND_TYPE.ROUND_PRE && currentRound <= ROUND_TYPE.FACEOFF_3) {
       return 60;
     } else {
       return 30;
     }
   }
   
+  // Get a ViewModel object representing the current state of the Round
   getRoundViewModel(): IRoundVM {
     return {
       current: this.current,
+      status: this.status,
       scores: this.scores,
       letters: this.letters,
       category: this.category,
@@ -120,30 +205,30 @@ export class Round implements IRound {
   start(startAt?: number): void {
     
     this.countdownStart = this.countdown = startAt || 30;
+    this.playing = true;
     
     this.timer.onTimerTick(() => {
       if (this.countdown >= 0) {
         this.countdown--;
       }
-      this.update(this.getRoundViewModel());
+      this.updateCallback(this.getRoundViewModel());
     });
     
     this.timer.onTimerComplete(() => {
       this.playing = false;
-      this.update(this.getRoundViewModel());
-      this.done(this);
+      this.updateCallback(this.getRoundViewModel());
+      this.doneCallback(this);
     });
-    
-    this.playing = true;
     
     // Start it!
     this.timer.start(this.countdown * 1000);
   }
   
+  // Advance to the next Round
   next(): void {
-    if (this.current !== ROUNDTYPE.FACEOFF_WINNER) {
+    if (this.current !== ROUND_TYPE.FACEOFF_WINNER) {
       this.current = this.current + 1;
-      this.setLetters();
+      this.createRound();
       this.start(this.getCountdownForRound(this.current));
     } else {
       // todo: end the game somehow

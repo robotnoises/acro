@@ -4,7 +4,7 @@
  * Any classes, enums, or interfaces related to a Game.
  */
 
-import {IRoundVM, IRound, Round, ROUNDTYPE} from './Round';
+import {IRoundVM, IRound, Round, ROUND_TYPE} from './Round';
 import {IPlayer} from './Player';
 
 /**
@@ -34,7 +34,7 @@ export interface IGame {
   roomId: string;
   status: GAME_STATUS;
   round: IRound;
-  players: any[];
+  players: any[]; // Todo, an object with each score?
   addPlayer(player: Object);
   removePlayer(player: Object);
   updateCallback();
