@@ -97,13 +97,16 @@ export class Letters implements ILetters {
   }
 
   add(letter: string): void {
+    
+    let SPACE = '\\s';
+    
     this.chars.push(letter);
     // Each time we add to the validator regex, we need to update the existing
     if (this.validator) {
       // We only want a space to be optional after the last word
-      this.validator = this.removeLastTwoChars(this.validator) + '+' + `[${letter}]+[^\\s]*\\s*$`;
+      this.validator = this.removeLastTwoChars(this.validator) + '+' + `[${letter}]+[^${SPACE}]*${SPACE}*$`;
     } else {
-      this.validator = `[${letter}]+[^\\s]*\\s*$`;
+      this.validator = `[${letter}]+[^${SPACE}]*${SPACE}*$`;
     }
   }
   

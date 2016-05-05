@@ -28,7 +28,7 @@ export class FirebaseService implements IFirebaseService {
   private waitForResponse($ref: any): Promise<Object> {
     return new Promise((resolve, reject) => {
       $ref.once('child_added', ($snap) => {
-        resolve($snap.val());
+        resolve({key: $snap.key(), value: $snap.val()});
       }, reject);
     });
   }

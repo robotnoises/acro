@@ -28,6 +28,7 @@ export class GameWorker implements IWorker {
   firebase: IFirebaseService;
   
   private game: IGame;
+  private updateUri: string;
   
   constructor(data: any) {
     
@@ -36,7 +37,9 @@ export class GameWorker implements IWorker {
 
     // The Game Object
     this.game = new Game(data.roomId, (round: IRound) => {
-      this.firebase.update(`/games/${data.roomId}/round`, round);
+      if (this.updateUri) {
+        this.firebase.update(this.updateUri, round);  
+      }
     }, (round: IRound) => {
       round.next();
     });
@@ -44,8 +47,16 @@ export class GameWorker implements IWorker {
   
   // Let's go!!!!
   go(): Promise<any> {
+    // Start the Game
     this.game.start();
-    var gameData = this.game.getData();
-    return this.firebase.createAt(`/games/${gameData.roomId}`, gameData);
+    // Create in Firebase
+    return new Promise((resolve) => {
+      var gameData = this.game.getData();
+      this.firebase.createAt(`/games/${gameData.roomId}`, gameData)
+        .then((value: any) => {
+          this.updateUri = `/games/${gameData.roomId}/round`;
+          resolve();
+        });
+    });
   }
 }
