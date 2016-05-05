@@ -4,8 +4,9 @@
  * Any classes, enums, or interfaces relating to Rounds of a Game.
  */
 
-import {LetterService, ILettersVM}  from './../services/LetterService';
-import {TimerService}               from './../services/TimerService';
+import {LetterService, ILettersVM} from './../services/LetterService';
+import {CategoryService} from './../services/CategoryService';
+import {TimerService} from './../services/TimerService';
 
 /**
  * ROUND_TYPE
@@ -62,7 +63,6 @@ export enum ROUND_TYPE {
 export interface IRound {
   current: ROUND_TYPE;
   playing: boolean;
-  scores: Object; // todo
   letters: ILettersVM;
   category: string;
   countdown: number;
@@ -84,7 +84,6 @@ export interface IRound {
 export interface IRoundVM {
   current: ROUND_TYPE;
   playing: boolean;
-  scores: Object; // todo
   letters: ILettersVM;
   category: string;
   countdown: number;
@@ -116,7 +115,6 @@ export class Round implements IRound {
   
   current: ROUND_TYPE;
   playing: boolean;
-  scores: Object; // todo IScore?
   letters: ILettersVM;
   category: string;
   countdown: number; // In seconds!!!
@@ -132,15 +130,30 @@ export class Round implements IRound {
     this.doneCallback = doneCallback;
     this.countdown = this.countdownStart = 30;
     this.timer = new TimerService();
-    this.scores = {};
-    this.category = '';
+    this.category = null;
+    this.letters = null;
     this.playing = false;
-    this.createRound();
   }
   
   // Set-up a round
   private createRound(): void {
     this.setLetters();
+    this.setCategory();
+  }
+  
+  // Is this a playing round? This refers to Rounds where a User attempts to 
+  // solve a given Acro puzzle.
+  private isPlayingRound(): boolean {
+    return ( 
+      this.current === ROUND_TYPE.ROUND_1 || 
+      this.current === ROUND_TYPE.ROUND_2 ||
+      this.current === ROUND_TYPE.ROUND_3 || 
+      this.current === ROUND_TYPE.ROUND_4 ||
+      this.current === ROUND_TYPE.ROUND_5 || 
+      this.current === ROUND_TYPE.FACEOFF_1 ||
+      this.current === ROUND_TYPE.FACEOFF_2 || 
+      this.current === ROUND_TYPE.FACEOFF_3
+    )
   }
   
   // Get the letters for a Round
@@ -171,29 +184,37 @@ export class Round implements IRound {
     this.updateCallback(this.getRoundViewModel());
   }
   
+  private setCategory(): void {
+    if (this.isPlayingRound()) {
+      this.category = CategoryService.choose();
+    } else {
+      this.category = null;
+    }
+  }
+  
   // 60 seconds for playing Rounds, 10 seconds for Results, otherwise it's 30.
-  private getCountdownForRound(currentRound: ROUND_TYPE): number {
+  private getCountdownForRound(): number {
     // A "playing" round lasts for 60 seconds. All others last 30.
     if (  
-      currentRound === ROUND_TYPE.ROUND_1 || 
-      currentRound === ROUND_TYPE.ROUND_2 ||
-      currentRound === ROUND_TYPE.ROUND_3 || 
-      currentRound === ROUND_TYPE.ROUND_4 ||
-      currentRound === ROUND_TYPE.ROUND_5 || 
-      currentRound === ROUND_TYPE.FACEOFF_1 ||
-      currentRound === ROUND_TYPE.FACEOFF_2 || 
-      currentRound === ROUND_TYPE.FACEOFF_3
+      this.current === ROUND_TYPE.ROUND_1 || 
+      this.current === ROUND_TYPE.ROUND_2 ||
+      this.current === ROUND_TYPE.ROUND_3 || 
+      this.current === ROUND_TYPE.ROUND_4 ||
+      this.current === ROUND_TYPE.ROUND_5 || 
+      this.current === ROUND_TYPE.FACEOFF_1 ||
+      this.current === ROUND_TYPE.FACEOFF_2 || 
+      this.current === ROUND_TYPE.FACEOFF_3
     ) {
       return 60;
     } else if (
-      currentRound === ROUND_TYPE.ROUND_1_RESULTS ||
-      currentRound === ROUND_TYPE.ROUND_2_RESULTS ||
-      currentRound === ROUND_TYPE.ROUND_3_RESULTS ||
-      currentRound === ROUND_TYPE.ROUND_4_RESULTS ||
-      currentRound === ROUND_TYPE.ROUND_5_RESULTS ||
-      currentRound === ROUND_TYPE.FACEOFF_1_RESULTS ||
-      currentRound === ROUND_TYPE.FACEOFF_2_RESULTS ||
-      currentRound === ROUND_TYPE.FACEOFF_3_RESULTS
+      this.current === ROUND_TYPE.ROUND_1_RESULTS ||
+      this.current === ROUND_TYPE.ROUND_2_RESULTS ||
+      this.current === ROUND_TYPE.ROUND_3_RESULTS ||
+      this.current === ROUND_TYPE.ROUND_4_RESULTS ||
+      this.current === ROUND_TYPE.ROUND_5_RESULTS ||
+      this.current === ROUND_TYPE.FACEOFF_1_RESULTS ||
+      this.current === ROUND_TYPE.FACEOFF_2_RESULTS ||
+      this.current === ROUND_TYPE.FACEOFF_3_RESULTS
     ) {
       return 10;
     } else {
@@ -206,7 +227,6 @@ export class Round implements IRound {
   getRoundViewModel(): IRoundVM {
     return {
       current: this.current,
-      scores: this.scores,
       letters: this.letters,
       category: this.category,
       countdown: this.countdown,
@@ -250,7 +270,7 @@ export class Round implements IRound {
     if (this.current !== ROUND_TYPE.FACEOFF_WINNER) {
       this.current = this.current + 1;
       this.createRound();
-      this.start(this.getCountdownForRound(this.current));
+      this.start(this.getCountdownForRound());
     } else {
       // todo: end the game somehow
       console.log('Game over, man');
