@@ -1,7 +1,7 @@
 /**
  * Round.ts
  * 
- * Any classes, enums, or interfaces relating to the Round of a Game.
+ * Any classes, enums, or interfaces relating to Rounds of a Game.
  */
 
 import {LetterService, ILettersVM}  from './../services/LetterService';
@@ -10,49 +10,47 @@ import {TimerService}               from './../services/TimerService';
 /**
  * ROUND_TYPE
  * 
- * An enum representing each possible Round.
+ * An enum representing each possible Round type.
  * 
  * ROUND_PRE - An idle period before the playing portion of a Game
- * ROUND_1 - The first "playing" Round, three letters
- * ROUND_2 - The second "playing" Round, four letters
- * ROUND_3 - ... five letters
- * ROUND_4 - ... six letters
- * ROUND_5 - ... seven letters
- * FACEOFF_1 - The first Faceoff Round between the top two players, three letters
- * FACEOFF_2 - The second..., five letters
- * FACEOFF_3 - The last..., seven letters
+ * ROUND_# - The first "playing" Round, three letters
+ * ROUND_#_VOTE - Voting for round 1
+ * ROUND_#_RESULTS - Show how the round was voted, award point
+ * ...
+ * FACEOFF_# - The first Faceoff Round between the top two players, three letters
+ * FACEOFF_#_VOTE - ... voting
+ * FACEOFF_#_RESULTS - Show results
+ * ...
  * FACEOFF_WINNER - An idle period after the Game has finished. Good job winner!
  */
 
 export enum ROUND_TYPE {
   ROUND_PRE,
-  ROUND_1, 
-  ROUND_2, 
-  ROUND_3, 
-  ROUND_4, 
+  ROUND_1,
+  ROUND_1_VOTE,
+  ROUND_1_RESULTS,
+  ROUND_2,
+  ROUND_2_VOTE,
+  ROUND_2_RESULTS,
+  ROUND_3,
+  ROUND_3_VOTE,
+  ROUND_3_RESULTS,
+  ROUND_4,
+  ROUND_4_VOTE,
+  ROUND_4_RESULTS,
   ROUND_5,
+  ROUND_5_VOTE,
+  ROUND_5_RESULTS,
   FACEOFF_1, 
+  FACEOFF_1_VOTE,
+  FACEOFF_1_RESULTS,
   FACEOFF_2, 
+  FACEOFF_2_VOTE,
+  FACEOFF_2_RESULTS,
   FACEOFF_3,
+  FACEOFF_3_VOTE,
+  FACEOFF_3_RESULTS,
   FACEOFF_WINNER
-}
-
-/**
- * ROUND_STATUS
- * 
- * An enum representing a portion of the Round.
- * 
- * IDLE - Nothing is happening
- * PLAYING - Players are currently entering their answers
- * VOTING - Players are voting for their favorite answer
- * RESULTS - Tally-up the votes, display the results
- */
-
-export enum ROUND_STATUS {
-  IDLE,
-  PLAYING,
-  VOTING,
-  RESULTS
 }
 
 /**
@@ -63,7 +61,6 @@ export enum ROUND_STATUS {
 
 export interface IRound {
   current: ROUND_TYPE;
-  status: ROUND_STATUS;
   playing: boolean;
   scores: Object; // todo
   letters: ILettersVM;
@@ -86,7 +83,6 @@ export interface IRound {
 
 export interface IRoundVM {
   current: ROUND_TYPE;
-  status: ROUND_STATUS;
   playing: boolean;
   scores: Object; // todo
   letters: ILettersVM;
@@ -107,8 +103,7 @@ export interface IRoundVM {
  * 
  * Properties:
  * 
- * @prop {ROUND_TYPE} current - The current Round
- * @prop {ROUND_STATUS} status - What's happening in the current Round
+ * @prop {ROUND_TYPE} current - The current Round type
  * @prop {boolean} playing - Are we playing or not?
  * @prop {Object} scores - Each player's score for the Round
  * @prop {ILettersVM} letters - The Letters (if any) for the Round
@@ -120,7 +115,6 @@ export interface IRoundVM {
 export class Round implements IRound {
   
   current: ROUND_TYPE;
-  status: ROUND_STATUS;
   playing: boolean;
   scores: Object; // todo IScore?
   letters: ILettersVM;
@@ -138,7 +132,6 @@ export class Round implements IRound {
     this.doneCallback = doneCallback;
     this.countdown = this.countdownStart = 30;
     this.timer = new TimerService();
-    this.status = ROUND_STATUS.IDLE;
     this.scores = {};
     this.category = '';
     this.playing = false;
@@ -147,7 +140,6 @@ export class Round implements IRound {
   
   // Set-up a round
   private createRound(): void {
-    this.status = ROUND_STATUS.PLAYING;
     this.setLetters();
   }
   
@@ -179,12 +171,33 @@ export class Round implements IRound {
     this.updateCallback(this.getRoundViewModel());
   }
   
-  // 60 seconds for playing Rounds, otherwise it's 30
+  // 60 seconds for playing Rounds, 10 seconds for Results, otherwise it's 30.
   private getCountdownForRound(currentRound: ROUND_TYPE): number {
-    // A "playing" round lasts for 60 seconds. All others last 30
-    if (currentRound > ROUND_TYPE.ROUND_PRE && currentRound <= ROUND_TYPE.FACEOFF_3) {
+    // A "playing" round lasts for 60 seconds. All others last 30.
+    if (  
+      currentRound === ROUND_TYPE.ROUND_1 || 
+      currentRound === ROUND_TYPE.ROUND_2 ||
+      currentRound === ROUND_TYPE.ROUND_3 || 
+      currentRound === ROUND_TYPE.ROUND_4 ||
+      currentRound === ROUND_TYPE.ROUND_5 || 
+      currentRound === ROUND_TYPE.FACEOFF_1 ||
+      currentRound === ROUND_TYPE.FACEOFF_2 || 
+      currentRound === ROUND_TYPE.FACEOFF_3
+    ) {
       return 60;
+    } else if (
+      currentRound === ROUND_TYPE.ROUND_1_RESULTS ||
+      currentRound === ROUND_TYPE.ROUND_2_RESULTS ||
+      currentRound === ROUND_TYPE.ROUND_3_RESULTS ||
+      currentRound === ROUND_TYPE.ROUND_4_RESULTS ||
+      currentRound === ROUND_TYPE.ROUND_5_RESULTS ||
+      currentRound === ROUND_TYPE.FACEOFF_1_RESULTS ||
+      currentRound === ROUND_TYPE.FACEOFF_2_RESULTS ||
+      currentRound === ROUND_TYPE.FACEOFF_3_RESULTS
+    ) {
+      return 10;
     } else {
+      // Idle periods and voting Rounds
       return 30;
     }
   }
@@ -193,7 +206,6 @@ export class Round implements IRound {
   getRoundViewModel(): IRoundVM {
     return {
       current: this.current,
-      status: this.status,
       scores: this.scores,
       letters: this.letters,
       category: this.category,
