@@ -242,7 +242,7 @@ export class Round implements IRound {
       this.playing = true;
       this.timer.start(this.countdown * 1000);
       clearTimeout(timeout);
-      }, WAIT);
+    }, WAIT);
   }
   
   // Advance to the next Round
