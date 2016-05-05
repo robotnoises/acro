@@ -156,6 +156,20 @@ export class Round implements IRound {
     )
   }
   
+  // This is generally an idle period for displaying the results of the last voting Round
+  private isResultsRound(): boolean {
+    return (
+      this.current === ROUND_TYPE.ROUND_1_RESULTS ||
+      this.current === ROUND_TYPE.ROUND_2_RESULTS ||
+      this.current === ROUND_TYPE.ROUND_3_RESULTS ||
+      this.current === ROUND_TYPE.ROUND_4_RESULTS ||
+      this.current === ROUND_TYPE.ROUND_5_RESULTS ||
+      this.current === ROUND_TYPE.FACEOFF_1_RESULTS ||
+      this.current === ROUND_TYPE.FACEOFF_2_RESULTS ||
+      this.current === ROUND_TYPE.FACEOFF_3_RESULTS
+    )
+  }
+  
   // Get the letters for a Round
   private setLetters(): void {
     
@@ -195,27 +209,9 @@ export class Round implements IRound {
   // 60 seconds for playing Rounds, 10 seconds for Results, otherwise it's 30.
   private getCountdownForRound(): number {
     // A "playing" round lasts for 60 seconds. All others last 30.
-    if (  
-      this.current === ROUND_TYPE.ROUND_1 || 
-      this.current === ROUND_TYPE.ROUND_2 ||
-      this.current === ROUND_TYPE.ROUND_3 || 
-      this.current === ROUND_TYPE.ROUND_4 ||
-      this.current === ROUND_TYPE.ROUND_5 || 
-      this.current === ROUND_TYPE.FACEOFF_1 ||
-      this.current === ROUND_TYPE.FACEOFF_2 || 
-      this.current === ROUND_TYPE.FACEOFF_3
-    ) {
+    if (this.isPlayingRound()) {
       return 60;
-    } else if (
-      this.current === ROUND_TYPE.ROUND_1_RESULTS ||
-      this.current === ROUND_TYPE.ROUND_2_RESULTS ||
-      this.current === ROUND_TYPE.ROUND_3_RESULTS ||
-      this.current === ROUND_TYPE.ROUND_4_RESULTS ||
-      this.current === ROUND_TYPE.ROUND_5_RESULTS ||
-      this.current === ROUND_TYPE.FACEOFF_1_RESULTS ||
-      this.current === ROUND_TYPE.FACEOFF_2_RESULTS ||
-      this.current === ROUND_TYPE.FACEOFF_3_RESULTS
-    ) {
+    } else if (this.isResultsRound()) {
       return 10;
     } else {
       // Idle periods and voting Rounds
