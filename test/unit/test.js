@@ -190,6 +190,20 @@ describe('LetterService()', function () {
   });
 });
 
+// CategoryService tests
+
+describe('CategoryService', function () {
+  
+  var _CategoryService = require(ROOT_PATH + 'services/CategoryService');
+  var categoryService = _CategoryService.CategoryService;
+  
+  it('should choose a category', function () {
+    var category = categoryService.choose();
+    assert.isString(category, 'is a string');
+    assert.isAbove(category.length, 0, 'is non-empty');
+  });
+});
+
 // var Triage = require(ROOT_PATH + 'queue/lib/Triage');
 
 // // Queue tests

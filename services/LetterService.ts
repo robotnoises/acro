@@ -1,6 +1,10 @@
-/*
- * Private functions 
-*/
+/**
+ * LetterService.ts
+ * 
+ * Randomly choose letters & create regex validator strings.
+ */
+
+// Private functions 
 
 // Letter frequency table provided by: https://en.wikipedia.org/wiki/Letter_frequency#Relative_frequencies_of_the_first_letters_of_a_word_in_the_English_language
 
@@ -113,7 +117,7 @@ export class Letters implements ILetters {
 
 export class LetterService {
 
-  static getRandom(max) {
+  private static getRandom(max: number) {
     return Math.floor(Math.random() * max);
   }
   
