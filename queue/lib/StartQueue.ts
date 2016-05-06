@@ -1,13 +1,13 @@
 // Queue.js
 // Fetch Tasks from the Queue
 
-import {QueueConfig}  from './../config/Config';
-import {Triage}       from './Triage';
-var Queue =           require('firebase-queue');
+import {Triage} from './Triage';
 
-export function StartQueue(firebase: any) {
+var Queue = require('firebase-queue');
 
-  var $ref = firebase.child(QueueConfig.FB_QUEUEPATH());
+export function StartQueue(firebase: any, queuePath: string) {
+
+  var $ref = firebase.child(queuePath);
   var queue = new Queue($ref, Triage.task);
 
   // Graceful shutdown

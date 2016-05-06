@@ -6,7 +6,7 @@ import {Worker} from './Worker';
 
 export class Triage {
   
-  constructor() {}
+  constructor() { }
 
   static task(task: ITask, progress: any, resolveTask: Function, rejectTask: Function) {
 
@@ -20,8 +20,7 @@ export class Triage {
     
     var fn = getWorker(task.type);
     
-    return fn(task)
-      .then(() => {
+    return fn(task).then(() => {
         resolveTask();
       })
       .catch((error) => { 

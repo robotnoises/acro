@@ -12,15 +12,14 @@ export class Server {
   }
 
   start(): any {
-
+    
     this.app = Express();
-  
     this.app.use(BodyParser.json());
     this.app.use(BodyParser.urlencoded({extended: true }));
-
+    
+    console.log('Starting the server');
     this.server = this.app.listen(this.port, function () {
       console.log('Server started');
-      // console.log('Listening on port %s...', this.server.address().port);
     });
     
     if (this.server) {

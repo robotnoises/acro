@@ -1,19 +1,18 @@
-import {Server}       from './server';
-import {Queue}        from './queue';
+/**
+ * App.ts
+ * 
+ * Let's start-up some junk.
+ * 
+ **/
 
-import {QueueConfig}  from './queue/config/Config';
-import {Config}       from './config/Config';
-
-/*
- * Start starting stuff
-*/
-
-console.log('Starting the application');
+import {Server} from './server';
+import {Queue} from './queue';
+import {Config} from './config';
 
 // Start the server
 var server = new Server(Config.PORT());
 
 // Start the Queue
 
-var queue = new Queue(QueueConfig.FB_URL(), QueueConfig.FB_TOKEN());
+var queue = new Queue(Config.FB_URL(), Config.FB_QUEUEPATH(), Config.FB_TOKEN());
 queue.start();

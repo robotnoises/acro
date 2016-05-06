@@ -1,11 +1,12 @@
 /*
  * FirebaseService.ts
- * A Wrapper for the Firebase API
  * 
- * */
+ * A Wrapper for the Firebase .
+ *
+ */
  
 import Firebase = require('firebase');
-import {QueueConfig} from './../config/Config'
+import {Config} from './../../config';
 
 export interface IFirebaseService {
   create(path: string, data: Object): Promise<Object>;
@@ -19,9 +20,10 @@ export class FirebaseService implements IFirebaseService {
   
   private firebase: any;
   
-  constructor() {
+  constructor(_firebaseUrl?: string) {
     if (!this.firebase) {
-      this.firebase = new Firebase(QueueConfig.FB_URL());
+      var firebaseUrl = _firebaseUrl || Config.FB_URL();
+      this.firebase = new Firebase(firebaseUrl);
     }  
   }
   

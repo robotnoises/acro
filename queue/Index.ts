@@ -4,16 +4,17 @@ import {StartQueue} from './lib/StartQueue';
 export class Queue {
   
   private url: string;
+  private queuePath: string;
   private token: string;
   
-  constructor(url: string, token: string) {
+  constructor(url: string, queuePath:string, token: string) {
     this.url = url;
     this.token = token;
   }
   
   start() {
     console.log('Starting Queue... ');
-    Auth.firebase(this.url, this.token).then(($firebaseInstance: any) => StartQueue($firebaseInstance))
+    Auth.firebase(this.url, this.token).then(($firebaseInstance: any) => StartQueue($firebaseInstance, this.queuePath))
     .catch((error: any) => {
       console.error(error);
     });
