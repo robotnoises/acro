@@ -6,9 +6,17 @@ import {Triage} from './Triage';
 var Queue = require('firebase-queue');
 
 export function StartQueue(firebase: any, queuePath: string) {
-
-  var $ref = firebase.child(queuePath);
-  var queue = new Queue($ref, Triage.task);
+  var $ref;
+  var queue;
+  
+  console.log('Starting the Queue');
+  
+  $ref = firebase.child(queuePath);
+  queue = new Queue($ref, Triage.task);
+  
+  if (queue) {
+    console.log(`Queue started, watching for Tasks on ${queuePath}`);  
+  }
 
   // Graceful shutdown
   process.on('SIGINT', function () {
