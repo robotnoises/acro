@@ -7,8 +7,9 @@ export class Queue {
   private queuePath: string;
   private token: string;
   
-  constructor(url: string, queuePath:string, token: string) {
+  constructor(url: string, queuePath: string, token: string) {
     this.url = url;
+    this.queuePath = queuePath;
     this.token = token;
   }
   
