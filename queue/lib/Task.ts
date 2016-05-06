@@ -2,7 +2,6 @@
 // Various Task-related utility methods
 
 import Firebase = require('firebase');
-import {QueueConfig}  from './../config/Config';
 
 export enum TASK_TYPE {
   GAME
