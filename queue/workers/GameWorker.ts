@@ -13,7 +13,7 @@ import {IRound} from './../../models/Round';
 /**
  * GameWorker
  * 
- * A Worker responsible for a Game instance's timing and updates.
+ * A Worker responsible for a creating a Game instance and handling its callbacks
  * 
  * Constructor:
  * 
@@ -37,14 +37,30 @@ export class GameWorker implements IWorker {
     // The Firebase Instance
     this.firebase = new FirebaseService();
 
-    // The Game Object
-    this.game = new Game(data.roomId, (round: IRound) => {
-      if (this.updateUri) {
-        this.firebase.update(this.updateUri, round);  
-      }
-    }, (round: IRound) => {
-      round.next();
-    });
+    /**
+     * The Game object, which takes two callbacks:
+     * 
+     * 1.) The updateCallback => when the data changes, persist that back to Firebase
+     * 2.) The nextRoundCallback => The Timer as finished, so advance to the next Round 
+     *  
+     * */ 
+    
+    this.game = new Game(data.roomId, 
+      (round: IRound) => this.updateFirebase(round), 
+      (round: IRound) => this.advanceRound(round));
+  }
+  
+  // Acts as a callback from the Game object, which is responsible for updating Firebase 
+  // when data changes.
+  private updateFirebase(round: IRound): void {
+    if (this.updateUri) {
+      this.firebase.update(this.updateUri, round);  
+    }
+  }
+  
+  // Acts as a callback from the Game object to advance to the next Round.
+  private advanceRound(round: IRound) {
+    round.next();
   }
   
   // Let's go!!!!

@@ -269,6 +269,7 @@ export class Round implements IRound {
   // Advance to the next Round
   next(): void {
     if (this.current !== ROUND_TYPE.FACEOFF_WINNER) {
+      console.log('Advancing to next Round');
       this.current = this.current + 1;
       this.createRound();
       this.start(this.getCountdownForRound());
