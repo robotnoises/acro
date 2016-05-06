@@ -2,6 +2,7 @@
  * Game.ts
  * 
  * Any classes, enums, or interfaces related to a Game.
+ * 
  */
 
 import {IRoundVM, IRound, Round, ROUND_TYPE} from './Round';
@@ -15,6 +16,7 @@ import {IRoundVM, IRound, Round, ROUND_TYPE} from './Round';
  * 1. INACTIVE, meaning there aren't enough people engaged to start a Game
  * 2. READY, meaning the Game is Inactive, but ready to start
  * 3. ACTIVE, meaning there is a Game in progress
+ * 
  */
 
 export enum GAME_STATUS {
@@ -27,6 +29,7 @@ export enum GAME_STATUS {
  * IGame
  * 
  * Interface for Game objects
+ * 
  */
 
 export interface IGame {
@@ -44,6 +47,7 @@ export interface IGame {
  * 
  * Interface for Game ViewModel objects. This is reserved for
  * data that will be persisted in Firebase. No Functions.
+ * 
  */
 
 export interface IGameVM {
@@ -75,6 +79,7 @@ export interface IGameVM {
  * 
  * @method start(): void - Start the Game
  * @method getData(): IGameVM - Get a snapshot of the Game's data
+ * 
  */
 
 export class Game implements IGame {

@@ -2,6 +2,7 @@
  * IWorker.ts
  * 
  * Defines the IWorker interface.
+ * 
  */
 
 import {IFirebaseService} from './../services/FirebaseService';
@@ -18,6 +19,7 @@ import {IFirebaseService} from './../services/FirebaseService';
  * Methods:
  * 
  * @method go(): Promise<any> - Starts the Worker
+ * 
  */
 
 export interface IWorker {

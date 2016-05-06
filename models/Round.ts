@@ -2,6 +2,7 @@
  * Round.ts
  * 
  * Any classes, enums, or interfaces relating to Rounds of a Game.
+ * 
  */
 
 import {LetterService, ILettersVM} from './../services/LetterService';
@@ -23,6 +24,7 @@ import {TimerService} from './../services/TimerService';
  * FACEOFF_#_RESULTS - Show results
  * ...
  * FACEOFF_WINNER - An idle period after the Game has finished. Good job winner!
+ * 
  */
 
 export enum ROUND_TYPE {
@@ -58,6 +60,7 @@ export enum ROUND_TYPE {
  * IRound
  * 
  * An interface for Round classes.
+ * 
  */
 
 export interface IRound {
@@ -79,6 +82,7 @@ export interface IRound {
  * 
  * An interfact for Round ViewModels. Any data meant to be persisted in
  * Firebase should be included here. No Functions.
+ * 
  */
 
 export interface IRoundVM {
@@ -109,6 +113,7 @@ export interface IRoundVM {
  * @prop {string} category - A prompt for players to use while playing a Round
  * @prop {number} countdown - Current countdown tick value
  * @prop {number} countdownStart - What number did the Timer start on?
+ * 
  */
 
 export class Round implements IRound {

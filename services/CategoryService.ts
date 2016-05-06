@@ -2,12 +2,14 @@
  * CategoryService.ts
  * 
  * Randomly choose a Category
+ * 
  */
 
 /**
  * CategoryService
  * 
  * A service that provides a random category.
+ * 
  */
 
 export class CategoryService {
@@ -20,6 +22,7 @@ export class CategoryService {
    * chose(): string
    * 
    * @param {number[]} not (optional) - An array of blacklisted indexes
+   * 
    */
   
   static choose(not?: number[]): string {
@@ -32,6 +35,7 @@ export class CategoryService {
  * _categories
  * 
  * An object literal containing all possible Categories
+ * 
  */
 
 var _categories = {

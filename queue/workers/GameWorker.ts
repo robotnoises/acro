@@ -2,6 +2,7 @@
  * GameWorker.ts
  * 
  * Anything related to the GameWorker class.
+ * 
  */
 
 import {IGame, IGameVM, Game} from './../../models/Game';
@@ -21,6 +22,7 @@ import {IRound} from './../../models/Round';
  * Methods:
  * 
  * @method go(): void - Start the Game
+ * 
  */
 
 export class GameWorker implements IWorker {

@@ -1,3 +1,10 @@
+/**
+ * Server
+ * 
+ * An Express server, to do, uh, something
+ * 
+ */
+
 import Express = require('express');
 import BodyParser = require('body-parser');
 
@@ -18,8 +25,9 @@ export class Server {
     this.app.use(BodyParser.urlencoded({extended: true }));
     
     console.log('Starting the server');
-    this.server = this.app.listen(this.port, function () {
-      console.log('Server started');
+    
+    this.server = this.app.listen(this.port, () => {
+      console.log(`Server started, listening on port: ${this.port}`);
     });
     
     if (this.server) {

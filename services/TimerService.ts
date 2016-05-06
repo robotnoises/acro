@@ -1,3 +1,10 @@
+/**
+ * TimerService.ts
+ * 
+ * A wrapper for the (awesome) tocktimer library.
+ * 
+ */
+
 var Timer = require('tocktimer');
 
 interface IOptions {
