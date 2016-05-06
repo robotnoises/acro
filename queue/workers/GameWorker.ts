@@ -47,7 +47,8 @@ export class GameWorker implements IWorker {
     
     this.game = new Game(data.roomId, 
       (round: IRound) => this.updateFirebase(round), 
-      (round: IRound) => this.advanceRound(round));
+      (round: IRound) => this.advanceRound(round)
+    );
   }
   
   // Acts as a callback from the Game object, which is responsible for updating Firebase 
