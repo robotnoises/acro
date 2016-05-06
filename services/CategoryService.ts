@@ -14,8 +14,17 @@
 
 export class CategoryService {
   
-  private static getRandom(max: number, not?: number[]) {
-    return Math.floor(Math.random() * max);
+  private static getRandom(max: number, not?: number[]): number {
+    
+    // Get a random number
+    var rand = Math.floor(Math.random() * max);
+    
+    // If the generated random is in the blacklist, try again...
+    if (not && not.indexOf(rand) !== -1) {
+      this.getRandom(max, not); 
+    } else {
+      return rand;
+    }
   }
   
   /**
@@ -25,9 +34,15 @@ export class CategoryService {
    * 
    */
   
-  static choose(not?: number[]): string {
+  static choose(not?: number[]): any {
+    
     var numCategories = Object.keys(_categories).length;
-    return _categories[this.getRandom(numCategories, not)];
+    var random = this.getRandom(numCategories, not);
+    
+    return {
+      key: random,
+      category: _categories[random]
+     };
   }
 }
 

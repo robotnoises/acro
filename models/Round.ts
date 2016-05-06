@@ -68,6 +68,7 @@ export interface IRound {
   playing: boolean;
   letters: ILettersVM;
   category: string;
+  categoryBlacklist: number[];
   countdown: number;
   countdownStart: number;
   start(startAt?: number);
@@ -122,6 +123,7 @@ export class Round implements IRound {
   playing: boolean;
   letters: ILettersVM;
   category: string;
+  categoryBlacklist: number[];
   countdown: number; // In seconds!!!
   countdownStart: number;
   updateCallback: any;
@@ -136,6 +138,7 @@ export class Round implements IRound {
     this.countdown = this.countdownStart = 30;
     this.timer = new TimerService();
     this.category = null;
+    this.categoryBlacklist = [];
     this.letters = null;
     this.playing = false;
   }
@@ -205,7 +208,9 @@ export class Round implements IRound {
   
   private setCategory(): void {
     if (this.isPlayingRound()) {
-      this.category = CategoryService.choose();
+      var c = CategoryService.choose(this.categoryBlacklist);
+      this.category = c.category;
+      this.categoryBlacklist.push(c.key);
     } else {
       this.category = null;
     }
