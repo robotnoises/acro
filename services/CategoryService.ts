@@ -28,7 +28,7 @@ export class CategoryService {
   }
   
   /**
-   * chose(): string
+   * choose(): any
    * 
    * @param {number[]} not (optional) - An array of blacklisted indexes
    * 
