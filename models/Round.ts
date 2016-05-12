@@ -293,6 +293,7 @@ export class Round implements IRound {
       this.start(this.getCountdownForRound());
     } else {
       this.type = ROUND_TYPE.IDLE;
+      this.updateCallback(this.getRoundViewModel());
       console.log('Game over, man');
     }
   }
