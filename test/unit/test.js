@@ -187,6 +187,24 @@ describe('LetterService()', function () {
       assert.isFalse(re.test(words));
     });
     
+    it('should valid a phrase with quotations around a word', function () {
+      var letterService = LetterService.LetterService;
+      var letters = letterService.getLetters(3);
+      var padding = 'abcd';
+      var words = '';
+      
+      for (var i = 0, max = letters.chars.length; i < max; i++) {
+        var firstLetter = letters.chars[i];
+        words = words + "\"" + firstLetter + padding + "\" " ;
+      }
+      
+      console.log('words: ', words);
+      console.log('validator', letters.validator);
+      
+      var re = new RegExp(letters.validator, 'gi');
+      assert.isTrue(re.test(words));
+    });
+    
   });
 });
 
@@ -220,31 +238,3 @@ describe('CategoryService', function () {
     assert.isTrue(notExcluded);
   });
 });
-
-// var Triage = require(ROOT_PATH + 'queue/lib/Triage');
-
-// // Queue tests
-// describe('Queue', function () {
-//   describe('new Triage()', function (done) {
-//     it('should get a GameWorker', function () {
-      
-//       var triage = Triage.Triage;
-      
-//       var fakeTask = {
-//         type: 0,
-//         data: {
-//           foo: 'bar'
-//         },
-//         timestamp: 'abcdefg123456'
-//       };
-      
-//       console.log('triage: ', triage);
-      
-//       triage.task(fakeTask).then(function () {
-//         // assert.isObject(task);
-//       });
-
-//       setTimeout(done, 300);
-//     });
-//   });
-// });

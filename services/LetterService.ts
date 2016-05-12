@@ -43,9 +43,9 @@ export class Letters implements ILetters {
     // Each time we add to the validator regex, we need to update the existing
     if (this.validator) {
       // We only want a space to be optional after the last word
-      this.validator = this.removeLastTwoChars(this.validator) + '+' + `[${letter}]+[^${SPACE}]*${SPACE}*$`;
+      this.validator = this.removeLastTwoChars(this.validator) + '+' + `['"]*[${letter}]+[^${SPACE}]*${SPACE}*$`;
     } else {
-      this.validator = `[${letter}]+[^${SPACE}]*${SPACE}*$`;
+      this.validator = `^${SPACE}*['"]*[${letter}]+[^${SPACE}]*${SPACE}*$`;
     }
   }
   
