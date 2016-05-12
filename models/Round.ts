@@ -292,7 +292,7 @@ export class Round implements IRound {
       this.createRound();
       this.start(this.getCountdownForRound());
     } else {
-      // todo: end the game somehow
+      this.type = ROUND_TYPE.IDLE;
       console.log('Game over, man');
     }
   }
