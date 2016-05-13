@@ -27,7 +27,7 @@ import {TimerService} from './../services/TimerService';
  * 
  */
 
-export enum ROUND_TYPE {
+export enum ROUND {
   ROUND_PRE,
   ROUND_1,
   ROUND_1_VOTE,
@@ -56,6 +56,13 @@ export enum ROUND_TYPE {
   FACEOFF_WINNER
 }
 
+export enum ROUND_TYPE {
+  IDLE,
+  PLAYING,
+  VOTE,
+  RESULTS
+}
+
 /**
  * IRound
  * 
@@ -64,7 +71,8 @@ export enum ROUND_TYPE {
  */
 
 export interface IRound {
-  current: ROUND_TYPE;
+  current: ROUND;
+  type: ROUND_TYPE;
   playing: boolean;
   letters: ILettersVM;
   category: string;
@@ -87,7 +95,8 @@ export interface IRound {
  */
 
 export interface IRoundVM {
-  current: ROUND_TYPE;
+  current: ROUND;
+  type: ROUND_TYPE;
   playing: boolean;
   letters: ILettersVM;
   category: string;
@@ -119,7 +128,8 @@ export interface IRoundVM {
 
 export class Round implements IRound {
   
-  current: ROUND_TYPE;
+  current: ROUND;
+  type: ROUND_TYPE;
   playing: boolean;
   letters: ILettersVM;
   category: string;
@@ -132,7 +142,8 @@ export class Round implements IRound {
   private timer: TimerService;
   
   constructor(updateCallback: Function, doneCallback: Function) {
-    this.current = ROUND_TYPE.ROUND_PRE
+    this.current = ROUND.ROUND_PRE;
+    this.type = ROUND_TYPE.IDLE;
     this.updateCallback = updateCallback;
     this.doneCallback = doneCallback;
     this.countdown = this.countdownStart = 30;
@@ -153,28 +164,28 @@ export class Round implements IRound {
   // solve a given Acro puzzle.
   private isPlayingRound(): boolean {
     return ( 
-      this.current === ROUND_TYPE.ROUND_1 || 
-      this.current === ROUND_TYPE.ROUND_2 ||
-      this.current === ROUND_TYPE.ROUND_3 || 
-      this.current === ROUND_TYPE.ROUND_4 ||
-      this.current === ROUND_TYPE.ROUND_5 || 
-      this.current === ROUND_TYPE.FACEOFF_1 ||
-      this.current === ROUND_TYPE.FACEOFF_2 || 
-      this.current === ROUND_TYPE.FACEOFF_3
+      this.current === ROUND.ROUND_1 || 
+      this.current === ROUND.ROUND_2 ||
+      this.current === ROUND.ROUND_3 || 
+      this.current === ROUND.ROUND_4 ||
+      this.current === ROUND.ROUND_5 || 
+      this.current === ROUND.FACEOFF_1 ||
+      this.current === ROUND.FACEOFF_2 || 
+      this.current === ROUND.FACEOFF_3
     )
   }
   
   // This is generally an idle period for displaying the results of the last voting Round
   private isResultsRound(): boolean {
     return (
-      this.current === ROUND_TYPE.ROUND_1_RESULTS ||
-      this.current === ROUND_TYPE.ROUND_2_RESULTS ||
-      this.current === ROUND_TYPE.ROUND_3_RESULTS ||
-      this.current === ROUND_TYPE.ROUND_4_RESULTS ||
-      this.current === ROUND_TYPE.ROUND_5_RESULTS ||
-      this.current === ROUND_TYPE.FACEOFF_1_RESULTS ||
-      this.current === ROUND_TYPE.FACEOFF_2_RESULTS ||
-      this.current === ROUND_TYPE.FACEOFF_3_RESULTS
+      this.current === ROUND.ROUND_1_RESULTS ||
+      this.current === ROUND.ROUND_2_RESULTS ||
+      this.current === ROUND.ROUND_3_RESULTS ||
+      this.current === ROUND.ROUND_4_RESULTS ||
+      this.current === ROUND.ROUND_5_RESULTS ||
+      this.current === ROUND.FACEOFF_1_RESULTS ||
+      this.current === ROUND.FACEOFF_2_RESULTS ||
+      this.current === ROUND.FACEOFF_3_RESULTS
     )
   }
   
@@ -183,15 +194,15 @@ export class Round implements IRound {
     
     var numLetters: number;
     
-    if (this.current === ROUND_TYPE.ROUND_1 || this.current === ROUND_TYPE.FACEOFF_1) {
+    if (this.current === ROUND.ROUND_1 || this.current === ROUND.FACEOFF_1) {
       numLetters = 3;
-    } else if (this.current === ROUND_TYPE.ROUND_2) {
+    } else if (this.current === ROUND.ROUND_2) {
       numLetters = 4;
-    } else if (this.current === ROUND_TYPE.ROUND_3 || this.current === ROUND_TYPE.FACEOFF_2) {
+    } else if (this.current === ROUND.ROUND_3 || this.current === ROUND.FACEOFF_2) {
       numLetters = 5;
-    } else if (this.current === ROUND_TYPE.ROUND_4) {
+    } else if (this.current === ROUND.ROUND_4) {
       numLetters = 6;
-    } else if (this.current === ROUND_TYPE.ROUND_5 || this.current === ROUND_TYPE.FACEOFF_3) {
+    } else if (this.current === ROUND.ROUND_5 || this.current === ROUND.FACEOFF_3) {
       numLetters = 7;
     } else {
       numLetters = 0;
@@ -233,6 +244,7 @@ export class Round implements IRound {
   getRoundViewModel(): IRoundVM {
     return {
       current: this.current,
+      type: this.type,
       letters: this.letters,
       category: this.category,
       countdown: this.countdown,
@@ -273,13 +285,15 @@ export class Round implements IRound {
   
   // Advance to the next Round
   next(): void {
-    if (this.current !== ROUND_TYPE.FACEOFF_WINNER) {
+    if (this.current !== ROUND.FACEOFF_WINNER) {
       console.log('Advancing to next Round');
       this.current = this.current + 1;
+      this.type = (this.type === ROUND_TYPE.RESULTS) ? ROUND_TYPE.PLAYING : (this.type + 1);
       this.createRound();
       this.start(this.getCountdownForRound());
     } else {
-      // todo: end the game somehow
+      this.type = ROUND_TYPE.IDLE;
+      this.updateCallback(this.getRoundViewModel());
       console.log('Game over, man');
     }
   }

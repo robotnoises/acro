@@ -5,7 +5,7 @@
  * 
  */
 
-import {IRoundVM, IRound, Round, ROUND_TYPE} from './Round';
+import {IRoundVM, IRound, Round, ROUND} from './Round';
 
 /**
  * GAME_STATUS
