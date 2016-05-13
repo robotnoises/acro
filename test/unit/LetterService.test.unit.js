@@ -88,5 +88,22 @@ describe('LetterService()', function () {
       assert.isFalse(re.test(words));
     });
     
+    it('should valid a phrase with quotations around a word', function () {
+      var letterService = LetterService.LetterService;
+      var letters = letterService.getLetters(3);
+      var padding = 'abcd';
+      var words = '';
+      
+      for (var i = 0, max = letters.chars.length; i < max; i++) {
+        var firstLetter = letters.chars[i];
+        words = words + "\"" + firstLetter + padding + "\" " ;
+      }
+      
+      console.log('words: ', words);
+      console.log('validator', letters.validator);
+      
+      var re = new RegExp(letters.validator, 'gi');
+      assert.isTrue(re.test(words));
+    });
   });
 });
